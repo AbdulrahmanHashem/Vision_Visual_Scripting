@@ -294,7 +294,6 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.node_designer_btn)
         self.actions_list["Node Designer Window"] = self.node_designer_btn
 
-
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon(self.global_switches.get_icon("library.png")), "&Library", self)
         self.library_btn.setIconText("library.png")
@@ -303,7 +302,6 @@ class MasterWindow(NodeEditorWindow):
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
         self.actions_list["Library Window"] = self.library_btn
-
 
         # Add Separator
         self.tools_bar.addSeparator()
