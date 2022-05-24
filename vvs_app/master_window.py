@@ -45,16 +45,12 @@ class MasterWindow(NodeEditorWindow):
     def initUI(self):
         # self.qss_theme = "qss/nodeeditor-light.qss"
 
-        self.settingsWidget = None
-
         self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Appearance"]["Theme"][0]] # ["Theme"][0]
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
 
         loadStylesheets(
             os.path.join(os.path.dirname(__file__), self.qss_theme), self.stylesheet_filename)
-
-        self.global_switches.update_font_size(self.global_switches.switches_Dict["Appearance"]["Font Size"])
 
         self.empty_icon = QIcon(".")
 
@@ -312,11 +308,8 @@ class MasterWindow(NodeEditorWindow):
         # Add Separator
         self.tools_bar.addSeparator()
 
-        # # Add Separator
-        # self.tools_bar.addSeparator()
-
     def onSettingsOpen(self):
-        if self.settingsWidget:
+        if self.__dict__.__contains__("settingsWidget"):
             if self.settingsWidget.isHidden():
                 self.settingsWidget.show()
                 self.settingsBtn.setChecked(True)
