@@ -203,7 +203,7 @@ class UserNodesList(QTabWidget):
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
-            QKeySequence(f"""Shift+{self.scene.masterRef.global_switches.switches_Dict["Delete"]}"""))
+            QKeySequence(f"""Shift+{self.scene.masterRef.global_switches.switches_Dict["Key Mapping"]["Delete"]}"""))
         self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
 
         if item.data(80) == User_Function.node_type:

@@ -269,13 +269,10 @@ class QDMGraphicsNode(QGraphicsItem):
 
         self.name_item = QGraphicsTextItem(self)
 
-        # current_theme = self.node.scene.masterRef.global_switches.switches_Dict["Theme"][0]
-        # text_color_index = self.node.scene.masterRef.global_switches.themes_colors["Nodes"].index("Text")
         self.name_item.setDefaultTextColor(Qt.white)
 
         self.name_item.setFont(self._title_font)
         self.name_item.setPos(self.title_horizontal_padding, -3)
-        # self.name_item.setTextWidth(self.width - 2 * self.title_horizontal_padding)
 
     def highlight_code(self, raw_code):
 
