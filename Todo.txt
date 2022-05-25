@@ -1,14 +1,13 @@
 # # inProgress
-#     - A list type combobox
 #
 # # urgent
-#     - B c++ code
-#     - B C++ includes
+#     - B c++ code / C++ includes
 #
 # # ToDos
 #     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
 #
 # # Done
+#     - A list type combobox
 #     - A Graph background color
 #     - Missing Icons
 #     - Splash Screen

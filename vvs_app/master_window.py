@@ -6,11 +6,10 @@ from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 
-from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from vvs_app.editor_settings_wnd import SettingsWidget
-from vvs_app.master_editor_wnd import MasterEditorWnd
+from vvs_app.master_editor_wnd import NodeEditorTab
 from vvs_app.master_designer_wnd import MasterDesignerWnd
 from vvs_app.editor_node_list import NodeList
 from vvs_app.editor_files_wdg import FilesWDG
@@ -41,10 +40,13 @@ DEBUG = False
 
 
 class MasterWindow(NodeEditorWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
 
     def initUI(self):
         # self.qss_theme = "qss/nodeeditor-light.qss"
-
         self.qss_theme = self.global_switches.themes[self.global_switches.switches_Dict["Appearance"]["Theme"][0]] # ["Theme"][0]
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), self.qss_theme)
@@ -648,10 +650,10 @@ class MasterWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def before_window_close(self):
-        self.proprietiesWdg.clear()
+        self.proprietiesWdg.clear_wdg_content()
 
     def on_before_save_file(self):
-        self.proprietiesWdg.clear()
+        self.proprietiesWdg.clear_wdg_content()
 
     def new_graph_tab(self):
         # This Check Prevents The Parent graph from opening in Cascade view-mode
@@ -659,7 +661,7 @@ class MasterWindow(NodeEditorWindow):
             self.switch_display(Editor=True)
 
 
-        node_editor = MasterEditorWnd(masterRef=self)
+        node_editor = NodeEditorTab(masterRef=self)
 
         VEL = UserNodesList(scene=node_editor.scene, propertiesWdg=self.proprietiesWdg)
         self.VEStackedWdg.addWidget(VEL)

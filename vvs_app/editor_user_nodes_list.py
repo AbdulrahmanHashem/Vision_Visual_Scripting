@@ -5,9 +5,10 @@ from PyQt5.QtWidgets import *
 from nodeeditor.node_scene import NodeScene
 from vvs_app.editor_properties_list import PropertiesList
 from vvs_app.nodes.default_functions import *
-from vvs_app.nodes.event_nodes import User_Function
+from vvs_app.nodes.event_nodes import UserFunction
 from vvs_app.nodes.nodes_configuration import VARIABLES, get_node_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
+from vvs_app.nodes.variables_nodes import *
 
 
 class UserNodesList(QTabWidget):
@@ -29,7 +30,7 @@ class UserNodesList(QTabWidget):
         tab2 = QWidget()
 
         self.addTab(tab1, "Variables")
-        self.addTab(tab2, "Events")
+        self.addTab(tab2, "Functions")
 
         # Create Variables List
         self.VarList = QListWidget()
@@ -154,7 +155,7 @@ class UserNodesList(QTabWidget):
         # Save new Var to list of vars with [Type, ID, Name, Value]
         self.user_nodes_data.append(node_data)
 
-        if new_node.node_type == User_Function.node_type:
+        if new_node.node_type == UserFunction.node_type:
             A_list = self.EventList
         else:
             A_list = self.VarList
@@ -163,8 +164,8 @@ class UserNodesList(QTabWidget):
         self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
 
         if user:
-            self.scene.history.storeHistory("Create User Node ", setModified=True)
-        self.scene.NodeEditor.UpdateTextCode(header=True)
+            self.scene.history.storeHistory("Created User Node ", setModified=True)
+        self.scene.node_editor.UpdateTextCode()
 
     def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
@@ -192,21 +193,21 @@ class UserNodesList(QTabWidget):
             list_ref = self.EventList
             item = self.EventList.currentItem()
 
-        self.proprietiesWdg.clear()
         self.node_name_input = QLineEdit()
         self.node_name_input.setValidator(QRegExpValidator(QRegExp("[A-Za-z0-9_]+")))
         self.node_name_input.setText(f"{item.data(91)}")
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
 
+        self.proprietiesWdg.clear_wdg_content()
         self.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
-            QKeySequence(f"""Shift+{self.scene.masterRef.global_switches.switches_Dict["Key Mapping"]["Delete"]}"""))
+            QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
         self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
 
-        if item.data(80) == User_Function.node_type:
+        if item.data(80) == UserFunction.node_type or item.data(80) == ListVar.node_type:
             self.return_type = QComboBox()
             self.return_type.addItems(self.all_return_types)
 
@@ -227,7 +228,7 @@ class UserNodesList(QTabWidget):
         node_ref = self.get_user_node_by_id(node_id)
         node_ref.node_return = self.return_type.currentText()
 
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
 
     def VarStartDrag(self, *args, **kwargs):
         try:
@@ -313,7 +314,7 @@ class UserNodesList(QTabWidget):
                     node.name = newName
                     node.grNode.name = newName
 
-            self.scene.NodeEditor.UpdateTextCode()
+            self.scene.node_editor.UpdateTextCode()
 
     def findListItem(self, selectedNodes: 'Nodes'):
         if selectedNodes != []:
@@ -396,13 +397,13 @@ class UserNodesList(QTabWidget):
 
             list_ref.takeItem(list_ref.currentRow())
             list_ref.clearSelection()
-            self.proprietiesWdg.clear()
-            self.scene.NodeEditor.UpdateTextCode()
+            self.proprietiesWdg.clear_wdg_content()
+            self.scene.node_editor.UpdateTextCode()
 
             if user:
                 self.scene.history.storeHistory("Delete User Node ", setModified=True)
 
-            self.scene.NodeEditor.UpdateTextCode(header=True)
+            self.scene.node_editor.UpdateTextCode()
 
         else:
             print("List Item Doesn't Exist")

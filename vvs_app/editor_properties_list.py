@@ -12,7 +12,7 @@ class PropertiesList(QScrollArea):
         self.master_ref = master_ref
         self.myForm = None
 
-    def clear(self):
+    def clear_wdg_content(self):
         widget = QFrame()
         self.setWidget(widget)
         self.myForm = None
@@ -44,8 +44,8 @@ class PropertiesList(QScrollArea):
             self.order.setValue(len(i)-1)
         i[self.nodeRef.getNodeOrder()], i[self.order.value()] = i[self.order.value()], i[self.nodeRef.getNodeOrder()]
 
-        self.nodeRef.scene.NodeEditor.UpdateTextCode()
+        self.nodeRef.scene.node_editor.UpdateTextCode()
 
-    def change_return_type(self, New_Class_ref, all_types, current_text):
-        New_Class_ref.return_type_dict.clear()
-        New_Class_ref.return_type_dict[current_text] = all_types[current_text]
+    # def change_return_type(self, New_Class_ref, all_types, current_text):
+    #     New_Class_ref.return_type_dict.clear()
+    #     New_Class_ref.return_type_dict[current_text] = all_types[current_text]

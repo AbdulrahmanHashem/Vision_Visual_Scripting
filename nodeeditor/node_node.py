@@ -209,7 +209,7 @@ class Node(Serializable):
         :param new_edge: reference to the changed :class:`~nodeeditor.node_edge.Edge`
         :type new_edge: :class:`~nodeeditor.node_edge.Edge`
         """
-        self.scene.NodeEditor.UpdateTextCode()
+        self.scene.node_editor.UpdateTextCode()
 
     def onInputChanged(self, socket: 'Socket'):
         """Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
@@ -594,7 +594,7 @@ class Node(Serializable):
             self.setPos(data['pos_x'], data['pos_y'])
             self.name = data['name']
             self.grNode.name = self.name
-            self.syntax = self.scene.NodeEditor.syntax_selector.currentText()
+            self.syntax = self.scene.node_editor.syntax_selector.currentText()
 
             data['inputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
             data['outputs'].sort(key=lambda socket: socket['index'] + socket['position'] * 10000)
