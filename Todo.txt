@@ -6,7 +6,7 @@
 #     - B C++ includes
 #
 # # ToDos
-#     - B enabling input in the terminal
+#     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
 #
 # # Done
 #     - A Graph background color
