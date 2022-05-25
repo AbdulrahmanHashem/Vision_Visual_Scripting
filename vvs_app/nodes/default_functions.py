@@ -247,8 +247,21 @@ class Equal(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
+
+    def onInputChanged(self, socket: 'Socket'):
+        inputs_types = [self.getInputWithSocket(0)[1], self.getInputWithSocket(1)[1]]
+
+        if inputs_types[0]:
+            new_input_type = inputs_types[0].socket_type
+        elif inputs_types[1]:
+            new_input_type = inputs_types[1].socket_type
+        else:
+            new_input_type = 6
+
+        for i in self.inputs:
+            i.changeSocketType(new_input_type)
 
     def getNodeCode(self):
         raw_code = "Empty"

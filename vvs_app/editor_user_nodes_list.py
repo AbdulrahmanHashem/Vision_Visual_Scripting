@@ -24,7 +24,6 @@ class UserNodesList(QTabWidget):
         self.InitUI()
 
     def InitUI(self):
-
         # Add QTabWidget and add Both Variables Tab and Events Tab
         tab1 = QWidget()
         tab2 = QWidget()
@@ -92,10 +91,7 @@ class UserNodesList(QTabWidget):
         id = 0
         while id in self.USER_NODES:
             id = id+1
-            # raise InvalidNodeRegistration(
-            #     "Duplicate User Variable registration of '%s'. There is already %s" % (var_ID, self.USERVARS[var_ID]))
         else:
-            # print(id)
             self.USER_NODES[id] = class_reference
             return id
 
@@ -108,7 +104,6 @@ class UserNodesList(QTabWidget):
     def MakeCopyOfClass(self, node):
         class NewNode(node):
             pass
-
         return NewNode
 
     def InitList(self):
@@ -187,10 +182,8 @@ class UserNodesList(QTabWidget):
     def list_selection_changed(self, var, *args, **kwargs):
         # Name line edite setup
         if var:
-            list_ref = self.VarList
             item = self.VarList.currentItem()
         else:
-            list_ref = self.EventList
             item = self.EventList.currentItem()
 
         self.node_name_input = QLineEdit()
@@ -201,12 +194,6 @@ class UserNodesList(QTabWidget):
         self.proprietiesWdg.clear_wdg_content()
         self.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
-        self.delete_btn = QPushButton(f"Delete {item.data(91)}")
-        self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
-        self.delete_btn.setShortcut(
-            QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
-        self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
-
         if item.data(80) == UserFunction.node_type or item.data(80) == ListVar.node_type:
             self.return_type = QComboBox()
             self.return_type.addItems(self.all_return_types)
@@ -215,6 +202,12 @@ class UserNodesList(QTabWidget):
             self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
 
             self.proprietiesWdg.detailsUpdate("Return Type", self.return_type)
+
+        self.delete_btn = QPushButton(f"Delete {item.data(91)}")
+        self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
+        self.delete_btn.setShortcut(
+            QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
+        self.proprietiesWdg.detailsUpdate("Delete Node", self.delete_btn)
 
     def update_node_return(self, node_name, node_id):
         for item in self.user_nodes_data:

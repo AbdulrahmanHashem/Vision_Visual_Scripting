@@ -61,7 +61,7 @@ class Node(Serializable):
 
         # just to be sure, init these variables
         self.grNode = QDMGraphicsNode(node=self, node_icon=node_icon)
-        # self.grNode.node_icon = QImage(node_icon)
+
         self.initSettings()
 
         self.name = name
@@ -385,7 +385,7 @@ class Node(Serializable):
             return ""
         except Exception as e:
             dumpException(e)
-            return ""
+            return e
 
     def get_my_input_code(self, index: int = 0):
         if not self.inputs or index > len(self.inputs)-1:
@@ -406,14 +406,7 @@ class Node(Serializable):
 
 
     def getSocketWdgValue(self, input_socket):
-        if input_socket.socket_type == 1 or input_socket.socket_type == 2:
-            return input_socket.userInputWdg.value()
-
-        elif input_socket.socket_type == 3:
-            return input_socket.userInputWdg.isChecked()
-
-        elif input_socket.socket_type == 4 or input_socket.socket_type == 5 or input_socket.socket_type == 6:
-            return input_socket.userInputWdg.toPlainText()
+        return self.scene.masterRef.get_QWidget_content(input_socket.userInputWdg)
 
     def getConnectedInputNode(self, index: int = 0):
         input_socket = self.inputs[index]
@@ -564,7 +557,6 @@ class Node(Serializable):
         return outs
 
 
-
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())
@@ -646,9 +638,6 @@ class Node(Serializable):
                 found.deserialize(socket_data, hashmap, restore_id)
 
             self.grNode.AutoResizeGrNode()
-
-
-
         except Exception as e:
             dumpException(e)
 
