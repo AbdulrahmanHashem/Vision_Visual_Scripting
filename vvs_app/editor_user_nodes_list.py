@@ -191,7 +191,7 @@ class UserNodesList(QTabWidget):
         self.node_name_input.setText(f"{item.data(91)}")
         self.node_name_input.returnPressed.connect(lambda: self.update_node_name(var))
 
-        self.proprietiesWdg.clear_wdg_content()
+        self.proprietiesWdg.clear_properties()
         self.proprietiesWdg.detailsUpdate("Node Name", self.node_name_input)
 
         if item.data(80) == UserFunction.node_type or item.data(80) == ListVar.node_type:
@@ -326,6 +326,8 @@ class UserNodesList(QTabWidget):
                     self.list_selection_changed(var=False)
                     self.setCurrentIndex(1)
                     return Litem
+        else:
+            self.proprietiesWdg.clear_properties()
 
 ###################################
     # Data
@@ -390,7 +392,7 @@ class UserNodesList(QTabWidget):
 
             list_ref.takeItem(list_ref.currentRow())
             list_ref.clearSelection()
-            self.proprietiesWdg.clear_wdg_content()
+            self.proprietiesWdg.clear_properties()
             self.scene.node_editor.UpdateTextCode()
 
             if user:

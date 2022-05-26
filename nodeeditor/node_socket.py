@@ -75,7 +75,7 @@ class QDMGraphicsSocket(QGraphicsItem):
 
         self.isHighlighted = False
 
-        self.radius = 6
+        self.radius = 8
         self.outline_width = 1
 
         self.paint = self.myPaint

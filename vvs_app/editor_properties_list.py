@@ -12,7 +12,7 @@ class PropertiesList(QScrollArea):
         self.master_ref = master_ref
         self.myForm = None
 
-    def clear_wdg_content(self):
+    def clear_properties(self):
         widget = QFrame()
         self.setWidget(widget)
         self.myForm = None

@@ -165,6 +165,7 @@ class NodeScene(Serializable):
                 self.history.storeHistory("Deselected Everything")
                 for callback in self._items_deselected_listeners: callback()
         self.node_editor.UpdateTextCode()
+        self.user_nodes_wdg.findListItem(self.getSelectedNodes())
 
     def isModified(self) -> bool:
         """Is this `Scene` dirty aka `has been modified` ?

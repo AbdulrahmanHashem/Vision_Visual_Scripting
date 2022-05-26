@@ -13,6 +13,7 @@ logicOperators = "#30000050"
 def Indent(String):
     return indent(String, '     ')
 
+
 # Process
 class IfStatement(MasterNode):
     icon = "if.png"
@@ -193,8 +194,23 @@ class GreaterThan(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
+
+    def onInputChanged(self, socket: 'Socket'):
+        inputs_types = [self.getInputWithSocket(0)[1], self.getInputWithSocket(1)[1]]
+
+        if inputs_types[0]:
+            new_input_type = inputs_types[0].socket_type
+            self.inputs[0].changeSocketType(new_input_type)
+        else:
+            self.inputs[0].changeSocketType(6)
+
+        if inputs_types[1]:
+            new_input_type = inputs_types[1].socket_type
+            self.inputs[1].changeSocketType(new_input_type)
+        else:
+            self.inputs[1].changeSocketType(6)
 
     def getNodeCode(self):
         raw_code = "Empty"
@@ -220,8 +236,23 @@ class LessThan(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1, 1], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
+
+    def onInputChanged(self, socket: 'Socket'):
+        inputs_types = [self.getInputWithSocket(0)[1], self.getInputWithSocket(1)[1]]
+
+        if inputs_types[0]:
+            new_input_type = inputs_types[0].socket_type
+            self.inputs[0].changeSocketType(new_input_type)
+        else:
+            self.inputs[0].changeSocketType(6)
+
+        if inputs_types[1]:
+            new_input_type = inputs_types[1].socket_type
+            self.inputs[1].changeSocketType(new_input_type)
+        else:
+            self.inputs[1].changeSocketType(6)
 
     def getNodeCode(self):
         raw_code = "Empty"
