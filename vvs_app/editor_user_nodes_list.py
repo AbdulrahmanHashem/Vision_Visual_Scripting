@@ -326,6 +326,8 @@ class UserNodesList(QTabWidget):
                     self.list_selection_changed(var=False)
                     self.setCurrentIndex(1)
                     return Litem
+
+            self.proprietiesWdg.clear_properties()
         else:
             self.proprietiesWdg.clear_properties()
 

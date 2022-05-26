@@ -74,20 +74,9 @@ class Node(Serializable):
 
         self.initSockets(inputs, outputs)
 
-        self.return_dataTypes_dict = {"Languages": ["Python", "C++"],
-                                        "mutable": ["", "void"],
-                                          "float": ["-> float", "float"],
-                                        "integer": ["-> integer", "int"],
-                                        "boolean": ["-> boolean", "boolean"],
-                                         "string": ["-> string", "string"],
-                                           "list": ["-> list", "list"],
-                                     "dictionary": ["-> dictionary", "dictionary"],
-                                          "tuple": ["-> tuple", "tuple"]
-                                      }
 
     def get_return(self):
-        index = self.return_dataTypes_dict["Languages"].index(self.syntax)
-        return self.return_dataTypes_dict[self.node_return][index]
+        return self.scene.node_editor.get_node_return(self.syntax, self.node_return)
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)
@@ -385,7 +374,7 @@ class Node(Serializable):
             return ""
         except Exception as e:
             dumpException(e)
-            return e
+            return ""
 
     def get_my_input_code(self, index: int = 0):
         if not self.inputs or index > len(self.inputs)-1:
