@@ -175,8 +175,11 @@ class SettingsWidget(QWidget):
         self.init_settings_window_default_ui(self.key_mapping_wdg, "Key Mapping")
 
         # Content
-        self.Key_Mapping_settings_list = ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
-                                          "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete", "Settings Window"]
+        self.Key_Mapping_settings_list = list(self.masterRef.global_switches.switches_Dict["Key Mapping"].keys())
+
+        # ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
+        #                               "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete", "Previous",
+        #                               "Next", "Settings Window"]
 
         for item in self.Key_Mapping_settings_list:
             lbl = QLabel(item)

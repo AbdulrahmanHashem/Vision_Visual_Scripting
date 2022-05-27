@@ -376,8 +376,7 @@ class MasterWindow(NodeEditorWindow):
                         "Tile": [None, "Tile the windows", self.graphs_parent_wdg.tileSubWindows, "&Tile"],
                         "addSeparator 3": [],
                         "Next": [None, "Move the focus to the next window", self.graphs_parent_wdg.activateNextSubWindow, "Ne&xt"],
-                        "Previous": [None, "Move the focus to the previous window", self.graphs_parent_wdg.activatePreviousSubWindow, "Pre&vious"],
-                        "Abdo": [None, "", self.graphs_parent_wdg.activateNextSubWindow, "&Abdo"],
+                        "Previous": [None, "Move the focus to the previous window", self.graphs_parent_wdg.activatePreviousSubWindow, "Pre&vious"]
                     }
                 ,
                 "Help":

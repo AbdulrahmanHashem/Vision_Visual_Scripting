@@ -47,9 +47,11 @@ class GlobalSwitches:
                                               "Paste": "Ctrl+V",
                                               "Delete": "Del",
 
-                                              "Settings Window": "Ctrl+Shift+Alt+S",
                                               "Select All": "Ctrl+A",
-                                              "Abdo": "Ctrl+Q"
+                                              "Previous": "Ctrl+Shift+Tab",
+                                              "Next": "Shift+Tab",
+
+                                              "Settings Window": "Ctrl+Shift+Alt+S"
                                           }
                                       }
 

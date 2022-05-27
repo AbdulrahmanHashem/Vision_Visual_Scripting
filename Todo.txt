@@ -7,7 +7,6 @@
 #     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
 #
 # # Done
-#
 #     - A list type combobox
 #     - A Graph background color
 #     - Missing Icons
