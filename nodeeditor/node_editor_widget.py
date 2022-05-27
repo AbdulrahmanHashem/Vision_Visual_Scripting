@@ -4,6 +4,7 @@ A module containing ``NodeEditorWidget`` class
 """
 import os
 import subprocess
+from array import array
 
 from qtpy.QtCore import *
 from qtpy.QtGui import *
@@ -17,7 +18,7 @@ from nodeeditor.utils import dumpException
 from vvs_app.nodes.default_functions import Print
 from vvs_app.nodes.event_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar
-from vvs_app.nodes.variables_nodes import StringVar, ListVar
+from vvs_app.nodes.variables_nodes import StringVar
 
 
 class NodeEditorWidget(QWidget):
@@ -40,34 +41,44 @@ class NodeEditorWidget(QWidget):
                               'C++': '.CPP',
                               'Rust': '.rs'}
 
-        self.return_dataTypes_dict = {
-                                    "Languages": ["Python", "C++"],
-                                    "mutable": ["", "void"],
-                                    "float": ["-> float", "float"],
-                                    "integer": ["-> integer", "int"],
-                                    "boolean": ["-> boolean", "boolean"],
-                                    "string": ["-> string", "string"],
-                                    "list": ["-> list", "list"],
-                                    "dictionary": ["-> dictionary", "dictionary"],
-                                    "tuple": ["-> tuple", "tuple"]
-                                      }
+        self.return_types = {
+                            "Languages": ["Python", "C++"],
+                              "mutable": ["", "void", "", ""],
+                                "float": [" -> float", "float", "f", ""],
+                              "integer": [" -> integer", "int", "q", ""],
+                              "boolean": [" -> boolean", "boolean", "B", ""],
+                               "string": [" -> string", "string", "u", ""],
+                                 "list": [" -> list", "list", "", ""],
+                           "dictionary": [" -> dictionary", "dictionary", "", ""],
+                                "tuple": [" -> tuple", "tuple", "", ""]
+                            }
+        # self.structure_types = {
+        #                             "Languages": ["Python", "C++"],
+        #                             "single value": ["", ""],
+        #                             "array": [f"array({},[])", "list"],
+        #                               }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
 
         self.create_widget_window()
-
-    def get_node_return(self, syntax, node_return):
-        index = self.return_dataTypes_dict["Languages"].index(syntax)
-        return self.return_dataTypes_dict[node_return][index]
-
+    # def structure_types(self, setInput="", get_return="mutable"):
+    #     return {
+    #             "Languages": ["Python", "C++"],
+    #             "single value": ["", ""],
+    #             "array": [f"""array("{self.return_types[get_return][2]}",[{setInput}])""", "list"],
+    #             }
+    def get_node_return(self, syntax, node_return, getting_array_type=0):
+        index = self.return_types["Languages"].index(syntax)
+        return self.return_types[node_return][index + getting_array_type]
+    # def get_node_structure(self, syntax, node_structure, setInput, get_return):
+    #     index = self.structure_types()["Languages"].index(syntax)
+    #     return self.structure_types(setInput, get_return)[node_structure][index]
     def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
         :class:`~nodeeditor.node_graphics_view.QDMGraphicsView`
         """
-
-
         # create graphics view
         self.graph_graphics_view = GraphGraphics(self.scene.grScene, self)
 
@@ -398,13 +409,10 @@ class NodeEditorWidget(QWidget):
                 IntegerVar.node_type: 'int',
                 BooleanVar.node_type: 'bool',
                 StringVar.node_type: 'string',
-                ListVar.node_type: 'list',
 
             }
 
-            used_node_types = []
-            for node in self.scene.nodes:
-                used_node_types.append(node.node_type)
+            used_node_types = [node.node_type for node in self.scene.nodes]
 
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
@@ -412,18 +420,14 @@ class NodeEditorWidget(QWidget):
             for data in self.scene.user_nodes_wdg.user_nodes_data:
                 if data[2] == StringVar.node_type:
                     imports.append("#include <string>")
-                elif data[2] == ListVar.node_type:
-                    imports.append("#include <list>")
-
-                if data[2] == ListVar.node_type:
-                    type_of_type = f"&lt;{self.get_node_return(syntax, data[3])}&gt;"
-                else:
-                    type_of_type = ""
+                # elif data[2] == ListVar.node_type:
+                #     imports.append("#include <list>")
 
                 if data[2] == UserFunction.node_type:
                     imports.append(f"{self.get_node_return(syntax,data[3])} {data[0]}();")
-                else:
-                    imports.append(f'extern {value[data[2]]}{type_of_type}{data[0]};')
+
+                elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
+                    imports.append(f'extern {value[data[2]]}{self.get_node_return(syntax, data[3])}{data[0]};')
 
         imports.sort()
         return imports

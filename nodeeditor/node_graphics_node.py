@@ -38,7 +38,6 @@ class QDMGraphicsNode(QGraphicsItem):
 
         # init title
         self.init_name()
-        self.name = self.node.name
 
         # creating a QGraphicsDropShadowEffect object
         # shadow = QGraphicsDropShadowEffect()
@@ -268,11 +267,11 @@ class QDMGraphicsNode(QGraphicsItem):
         """Set up the title Graphics representation: font, color, position, etc."""
 
         self.name_item = QGraphicsTextItem(self)
-
         self.name_item.setDefaultTextColor(Qt.white)
-
         self.name_item.setFont(self._title_font)
         self.name_item.setPos(self.title_horizontal_padding, -3)
+
+        self.name = self.node.name
 
     def highlight_code(self, raw_code):
 

@@ -741,12 +741,6 @@ class MasterWindow(NodeEditorWindow):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
-    def about(self):
-        QMessageBox.about(self, "About Calculator NodeEditor Example",
-                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
-
     def get_QWidget_content(self, widget):
         if [QKeySequenceEdit].__contains__(type(widget)):
             return widget.keySequence().toString()
@@ -785,3 +779,8 @@ class MasterWindow(NodeEditorWindow):
         else:
             print(widget, "Widget Not Supported")
 
+    def about(self):
+        QMessageBox.about(self, "About Calculator NodeEditor Example",
+                          "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
+                          "document interface applications using PyQt5 and NodeEditor. For more information visit: "
+                          "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")

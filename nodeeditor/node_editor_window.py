@@ -7,7 +7,6 @@ import os, json
 from PyQt5.QtGui import QImage
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
-# from nodeeditor.node_editor_widget import NodeEditorWidget
 from nodeeditor.node_editor_widget import NodeEditorWidget
 from datetime import datetime
 
@@ -41,15 +40,18 @@ class NodeEditorWindow(QMainWindow):
 
         self.set_nodes_icons()
 
+
     def set_nodes_icons(self):
         for cls in MasterNode.__subclasses__():
             icon = os.path.split(cls.icon)[-1]
             cls.icon = self.global_switches.get_icon(icon)
 
+
     def sizeHint(self):
         return QSize(800, 600)
 
     def createStatusBar(self):
+
         """Create Status bar and connect to `Graphics View` scenePosChanged event"""
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")

@@ -13,7 +13,6 @@ logicOperators = "#30000050"
 def Indent(String):
     return indent(String, '     ')
 
-
 # Process
 class IfStatement(MasterNode):
     icon = "if.png"
@@ -162,7 +161,7 @@ class And(MasterNode):
     node_color = logicOperators
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[3, 3], outputs=[3])
+        super().__init__(scene, inputs=[6, 6], outputs=[3])
         self.showCode = False
 
     def getNodeCode(self):

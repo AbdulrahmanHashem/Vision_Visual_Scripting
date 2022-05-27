@@ -119,3 +119,4 @@ class FilesWDG(QWidget):
             self.msg = QMessageBox()
             self.msg.setText(f"AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} MB")
             self.msg.show()
+            # self.masterRef.statusBar().showMessage(f"""AutoSave Folder Has Exceeded the Set Limit of {FolderContentSizeInGBs} Gigabytes""")
