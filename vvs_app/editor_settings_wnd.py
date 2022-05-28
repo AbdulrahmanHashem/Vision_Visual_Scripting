@@ -170,17 +170,15 @@ class SettingsWidget(QWidget):
                 window.widget().scene.history.Edits_Counter = 0
 
     def init_key_mapping_wdg(self):
-        self.key_mapping_wdg = QWidget()
+        self.key_mapping_wdg = QScrollArea()
 
         self.init_settings_window_default_ui(self.key_mapping_wdg, "Key Mapping")
 
         # Content
         self.Key_Mapping_settings_list = list(self.masterRef.global_switches.switches_Dict["Key Mapping"].keys())
-
         # ["New Graph", "Open", "Set Project Location", "Save", "Save As", "Exit",
         #                               "Undo", "Redo", "Select All", "Cut", "Copy", "Paste", "Delete", "Previous",
         #                               "Next", "Settings Window"]
-
         for item in self.Key_Mapping_settings_list:
             lbl = QLabel(item)
             self.Grid_Layout.addWidget(lbl, self.Key_Mapping_settings_list.index(item), 0, Qt.AlignRight)

@@ -32,20 +32,20 @@ class FloatVar(MasterNode):
             if self.syntax == "Python":
                 if self.node_structure == 'single value':
                     python_code = f"""
-{self.name}={setInput}
+{self.name} = {setInput}
 {brotherCode}"""
                     raw_code = python_code
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name}=array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
 
             elif self.syntax == "C++":
                 if self.node_structure == 'single value':
                     CPP_code = f"""
-float {self.name}= {setInput};
+float {self.name} = {setInput};
 {brotherCode}"""
                     raw_code = CPP_code
                 elif self.node_structure == 'array':
@@ -84,19 +84,19 @@ class IntegerVar(MasterNode):
             if self.syntax == "Python":
                 if self.node_structure == 'single value':
                     python_code = f"""
-{self.name}={setInput}
+{self.name} = {setInput}
 {brotherCode}"""
                     raw_code = python_code
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name}=array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
                 if self.node_structure == 'single value':
                     CPP_code = f"""
-int {self.name}= {setInput};
+int {self.name} = {setInput};
 {brotherCode}"""
                     raw_code = CPP_code
                 elif self.node_structure == 'array':
@@ -136,19 +136,19 @@ class BooleanVar(MasterNode):
             if self.syntax == "Python":
                 if self.node_structure == 'single value':
                     python_code = f"""
-{self.name}={setInput}
+{self.name} = {setInput}
 {brotherCode}"""
                     raw_code = python_code
 
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name}=array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
                 if self.node_structure == 'single value':
                     CPP_code = f"""
-bool {self.name}= {setInput};
+bool {self.name} = {setInput};
 {brotherCode}"""
                     raw_code = CPP_code
                 elif self.node_structure == 'array':
@@ -183,22 +183,22 @@ class StringVar(MasterNode):
             self.outputs[1].socket_code = self.name
             self.showCode = not self.isInputConnected(0)
             brotherCode = self.get_other_socket_code(0)
-            setInput = self.get_my_input_code(1)
+            setInput = f"{chr(34)}{self.get_my_input_code(1)}{chr(34)}"
             if self.syntax == "Python":
                 if self.node_structure == 'single value':
                     python_code = f"""
-{self.name}={setInput}
+{self.name} = {setInput}
 {brotherCode}"""
                     raw_code = python_code
                 elif self.node_structure == 'array':
                     python_code = f"""
-{self.name}=array("{self.get_return(getting_array_type = True)}",[{setInput}])
+{self.name} = array("{self.get_return(getting_array_type = True)}",[{setInput}])
 {brotherCode}"""
                     raw_code = python_code
             elif self.syntax == "C++":
                 if self.node_structure == 'single value':
                     CPP_code = f"""
-string {self.name}= {setInput};
+string {self.name} = {setInput};
 {brotherCode}"""
                     raw_code = CPP_code
                 elif self.node_structure == 'array':

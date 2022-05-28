@@ -286,7 +286,6 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.node_editor_btn)
         self.actions_creation_dict["UI"]["Node Editor Window"] = [self.node_editor_btn]
 
-
         # Add and connect self.node_designer_btn
         self.node_designer_btn = QAction(QIcon(self.global_switches.get_icon("node design.png")), "&Node Designer", self)
         self.node_designer_btn.setIconText("node design.png")
@@ -296,7 +295,6 @@ class MasterWindow(NodeEditorWindow):
         self.tools_bar.addAction(self.node_designer_btn)
         self.actions_creation_dict["UI"]["Node Designer Window"] = [self.node_designer_btn]
 
-
         # Add and connect self.library_btn
         self.library_btn = QAction(QIcon(self.global_switches.get_icon("library.png")), "&Library", self)
         self.library_btn.setIconText("library.png")
@@ -305,7 +303,6 @@ class MasterWindow(NodeEditorWindow):
         self.library_btn.setShortcut(QKeySequence("`"))
         self.tools_bar.addAction(self.library_btn)
         self.actions_creation_dict["UI"]["Library Window"] = [self.library_btn]
-
 
         # Add Separator
         self.tools_bar.addSeparator()
@@ -336,8 +333,6 @@ class MasterWindow(NodeEditorWindow):
             self.writeSettings()
             event.accept()
 
-            # hacky fix for PyQt 5.14.x
-            import sys
             sys.exit(0)
 
     def createActions(self):
