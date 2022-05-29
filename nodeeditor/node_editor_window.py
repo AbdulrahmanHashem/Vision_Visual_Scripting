@@ -46,7 +46,6 @@ class NodeEditorWindow(QMainWindow):
             icon = os.path.split(cls.icon)[-1]
             cls.icon = self.global_switches.get_icon(icon)
 
-
     def sizeHint(self):
         return QSize(800, 600)
 
