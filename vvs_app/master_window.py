@@ -769,6 +769,7 @@ class MasterWindow(NodeEditorWindow):
         elif [QRadioButton, QCheckBox].__contains__(type(widget)):
             widget.setChecked(new_value)
         elif [QComboBox].__contains__(type(widget)):
+            widget.clear()
             widget.addItems(new_value)
         else:
             print(widget, "Widget Not Supported")
