@@ -201,8 +201,7 @@ class UserNodesList(QTabWidget):
         # Create user_function return type widget
         if item.data(80) == UserFunction.node_type:
             self.return_type = QComboBox()
-            return_types = list(self.scene.node_editor.return_types.keys())
-            return_types.remove('Languages')
+            return_types = list(self.scene.node_editor.Languages["data types"].keys())
             self.return_type.addItems(return_types)
 
             self.return_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_return)

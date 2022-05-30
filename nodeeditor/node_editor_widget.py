@@ -37,43 +37,39 @@ class NodeEditorWidget(QWidget):
         self.filename = None
         self.file_path = ''
 
-        self.files_extensions = {'Python': '.py',
-                              'C++': '.CPP',
-                              'Rust': '.rs'}
-
-        self.return_types = {
-                            "Languages": ["Python", "C++"],
-                              "mutable": ["", "void", "", ""],
-                                "float": [" -> float", "float", "f", ""],
-                              "integer": [" -> integer", "int", "q", ""],
-                              "boolean": [" -> boolean", "boolean", "B", ""],
-                               "string": [" -> string", "string", "u", ""],
-                                 "list": [" -> list", "list", "", ""],
-                           "dictionary": [" -> dictionary", "dictionary", "", ""],
-                                "tuple": [" -> tuple", "tuple", "", ""]
-                            }
-        # self.structure_types = {
-        #                             "Languages": ["Python", "C++"],
-        #                             "single value": ["", ""],
-        #                             "array": [f"array({},[])", "list"],
-        #                               }
+        self.Languages = {"Languages": {"Python": 0, "C++": 1, "Rust": 2},
+                         "extensions": ['.py', '.CPP', '.rs'],
+                      "return_syntax": [" -> ", "", " -> "],
+                         "data types": {"mutable": ["", "void", ""],
+                                          "float": ["float", "float", "float"],
+                                        "integer": ["int", "int", "int"],
+                                        "boolean": ["bool", "boolean", "bool"],
+                                         "string": ["str", "string", "str"],
+                                           "list": ["list", "list", "list"],
+                                     "dictionary": ["dict", "dictionary", "dict"],
+                                          "tuple": ["tuple", "tuple", "tuple"]
+                                        },
+               "variable syntax": {"single value": ["name = data type(content)next", "data type name = content;next", ""],
+                                          "array": ["name = np.array(data type,[content])next", "list <data type> name = {content};next", ""]
+                                   },
+                        "function syntax": {"set": ["def name()return:content", "return name() {content}", "fn name()return: {content}"],
+                                           "call": ["name()content", "name();content", ""]
+                                            }
+                          }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
 
         self.create_widget_window()
-    # def structure_types(self, setInput="", get_return="mutable"):
-    #     return {
-    #             "Languages": ["Python", "C++"],
-    #             "single value": ["", ""],
-    #             "array": [f"""array("{self.return_types[get_return][2]}",[{setInput}])""", "list"],
-    #             }
-    def get_node_return(self, syntax, node_return, getting_array_type=0):
-        index = self.return_types["Languages"].index(syntax)
-        return self.return_types[node_return][index + getting_array_type]
-    # def get_node_structure(self, syntax, node_structure, setInput, get_return):
-    #     index = self.structure_types()["Languages"].index(syntax)
-    #     return self.structure_types(setInput, get_return)[node_structure][index]
+
+    def get_datatype(self, syntax, node_return, as_fun_return:bool=False):
+        lang_index = self.scene.node_editor.Languages["Languages"][syntax]
+        get_datatype = self.scene.node_editor.Languages["data types"][node_return][lang_index]
+        if as_fun_return:
+            if get_datatype != "":
+                return f"""{self.scene.node_editor.Languages["return_syntax"][lang_index]}{get_datatype}"""
+        return get_datatype
+
     def create_widget_window(self):
         """
         Set up this ``NodeEditorWidget`` with its layout,  :class:`~nodeeditor.node_scene.Scene` and
@@ -372,13 +368,14 @@ class NodeEditorWidget(QWidget):
             text_code = self.header_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
-            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
+            lang_index = self.Languages["Languages"]["C++"]
+            Ex = self.Languages["extensions"][lang_index]
             directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.cpp_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
-
         else:
-            Ex = self.files_extensions[f'{self.syntax_selector.currentText()}']
+            lang_index = self.Languages["Languages"][self.syntax_selector.currentText()]
+            Ex = self.Languages["extensions"][lang_index]
             directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.text_code_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
@@ -420,14 +417,10 @@ class NodeEditorWidget(QWidget):
             for data in self.scene.user_nodes_wdg.user_nodes_data:
                 if data[2] == StringVar.node_type:
                     imports.append("#include <string>")
-                # elif data[2] == ListVar.node_type:
-                #     imports.append("#include <list>")
-
                 if data[2] == UserFunction.node_type:
-                    imports.append(f"{self.get_node_return(syntax,data[3])} {data[0]}();")
-
+                    imports.append(f"{self.get_datatype(syntax, data[3])} {data[0]}();")
                 elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
-                    imports.append(f'extern {value[data[2]]}{self.get_node_return(syntax, data[3])}{data[0]};')
+                    imports.append(f'extern {value[data[2]]}{self.get_datatype(syntax, data[3])}{data[0]};')
 
         imports.sort()
         return imports

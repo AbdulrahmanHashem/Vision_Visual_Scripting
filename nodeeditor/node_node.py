@@ -73,13 +73,8 @@ class Node(Serializable):
 
         self.initSockets(inputs, outputs)
 
-
-    def get_return(self, getting_array_type=0):
-        if getting_array_type: getting_array_type = 2
-        return self.scene.node_editor.get_node_return(self.syntax, self.node_return, getting_array_type)
-
-    # def get_structure(self, setInput, get_return):
-    #     return self.scene.node_editor.get_node_structure(self.syntax, self.node_structure, setInput, get_return)
+    def get_datatype(self, as_fun_return:bool=False):
+        return self.scene.node_editor.get_datatype(self.syntax, self.node_return, as_fun_return)
 
     def getNodeOrder(self):
         currentOrder = self.scene.nodes.index(self)

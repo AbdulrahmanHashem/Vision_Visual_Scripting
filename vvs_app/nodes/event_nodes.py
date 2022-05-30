@@ -4,7 +4,6 @@ from vvs_app.master_node import MasterNode
 from nodeeditor.node_editor_widget import *
 
 
-
 class UserFunction(MasterNode):
     icon = "event.png"
     name = "user_function"
@@ -18,41 +17,45 @@ class UserFunction(MasterNode):
         self.user_node = True
 
     def getNodeCode(self):
-        raw_code = "Empty"
-        if self.is_setter:
-            childCode = self.get_other_socket_code(0)
-            if self.syntax == "Python":
+        (set_get, self.showCode) = ("set", True) if self.is_setter else ("call", False)
 
-                python_code = f"""
-def {self.name}(){self.get_return()}:
-{Indent(childCode)}"""
+        syn = self.scene.node_editor.Languages["function syntax"][set_get][self.scene.node_editor.Languages["Languages"][self.syntax]].\
+            replace("name", self.name).replace("return", self.get_datatype(True)).replace("content", f"\n{Indent(self.get_other_socket_code(0))}").replace("{", "\n{").replace("}", "\n}")
 
-                raw_code = python_code
+        raw_code = syn
+        return self.grNode.highlight_code(raw_code)
 
-            elif self.syntax == "C++":
-                L_P = "{"
-                R_P = "}"
-                CPP_code = f"""
-{self.get_return()} {self.name}()
-{L_P}
-{Indent(childCode)}
-{R_P}"""
-                raw_code = CPP_code
-            return self.grNode.highlight_code(raw_code)
-        else:
-            self.showCode = not self.isInputConnected(0)
-            brotherCode = self.get_other_socket_code(0)
-            if self.syntax == "Python":
-
-                python_code = f"""
-{self.name}()
-{brotherCode}"""
-                raw_code = python_code
-
-            elif self.syntax == "C++":
-
-                cpp_code = f"""
-{self.name}();
-{brotherCode}"""
-                raw_code = cpp_code
-            return self.grNode.highlight_code(raw_code)
+#         if self.is_setter:
+#             childCode = self.get_other_socket_code(0)
+#
+#             if self.syntax == "Python":
+#                 python_code = f"""
+# def {self.name}(){self.get_return()}:
+# {Indent(childCode)}"""
+#                 raw_code = python_code
+#             elif self.syntax == "C++":
+#                 L_P = "{"
+#                 R_P = "}"
+#                 CPP_code = f"""
+# {self.get_return()} {self.name}()
+# {L_P}
+# {Indent(childCode)}
+# {R_P}"""
+#                 raw_code = CPP_code
+#             return self.grNode.highlight_code(raw_code)
+#         else:
+#             self.showCode = not self.isInputConnected(0)
+#             brotherCode = self.get_other_socket_code(0)
+#             if self.syntax == "Python":
+#
+#                 python_code = f"""
+# {self.name}()
+# {brotherCode}"""
+#                 raw_code = python_code
+#             elif self.syntax == "C++":
+#
+#                 cpp_code = f"""
+# {self.name}();
+# {brotherCode}"""
+#                 raw_code = cpp_code
+#             return self.grNode.highlight_code(raw_code)
