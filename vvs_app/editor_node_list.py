@@ -4,7 +4,7 @@ from qtpy.QtGui import QPixmap, QIcon, QDrag
 from qtpy.QtCore import QSize, Qt, QByteArray, QDataStream, QMimeData, QIODevice, QPoint
 from qtpy.QtWidgets import QAbstractItemView
 
-from vvs_app.nodes.nodes_configuration import FUNCTIONS, get_node_by_type, LISTBOX_MIMETYPE
+from vvs_app.nodes.nodes_configuration import FUNCTIONS, get_class_by_type, LISTBOX_MIMETYPE
 from nodeeditor.utils import dumpException
 
 
@@ -40,11 +40,11 @@ class NodeList(QTreeWidget):
 
         Funs = list(FUNCTIONS.keys())
         for Fun in Funs:
-            node = get_node_by_type(Fun)
+            node = get_class_by_type(Fun)
             self.addMyItem(node.name, node.icon, node)
 
     def init_primary_content(self):
-        self.categories = {"▼ Process": None, "▼ Logic": None, "▼ Math": None, "▼ Input": None, "▼ Output": None}
+        self.categories = {"▼ Process": None, "▼ Logic": None, "▼ Math": None, "▼ Input": None, "▼ Output": None, "▼ List Operator": None}
         for category in list(self.categories.keys()):
             item = QTreeWidgetItem(self, [category])
             item.setFont(0, QFont("Arial", 9))

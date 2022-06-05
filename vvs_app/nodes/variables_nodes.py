@@ -1,138 +1,135 @@
 from PyQt5.QtGui import QBrush, QColor
 
-from vvs_app.nodes.default_functions import FontSize, FontFamily
+from vvs_app.nodes.default_functions import FontSize, FontFamily, MakeList
 from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 
-FloatColor = "#7000FF10"
-IntegerColor = "#aa0070FF"
-BooleanColor = "#aaFF1010"
-StringColor = "#70FF10FF"
 
+Numpy_Vars = {'float': "'f'",
+              'integer': "'i'",
+              'boolean': "'?'",
+              'string': "'S'"}
 
-class FloatVar(MasterNode):
+Rust_Vars = {'float': "f32",
+             'integer': "i32",
+             'boolean': "bool",
+             'string': "&str"}
+
+class UserVar(MasterNode):
     icon = ""
-    name = "user_float"
-    node_return = "float"
+    name = "user_variable"
     category = "VARIABLE"
     sub_category = "VARIABLE"
-    node_color = FloatColor
 
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[1]) if not isSetter else super().__init__(scene, inputs=[0, 1], outputs=[0, 1])
+    def __init__(self, scene, isSetter, node_usage=None):
+        if not self.node_usage: self.node_usage = node_usage
+        if isSetter:
+            super().__init__(scene, inputs=[0, self.node_usage], outputs=[0, self.node_usage])
+            self.getNodeCode = self.get_setter_code
+        else:
+            super().__init__(scene, inputs=[], outputs=[self.node_usage])
+            self.getNodeCode = self.get_getter_code
+
         self.is_setter = isSetter
 
-    def getNodeCode(self):
-        if self.is_setter:
-            self.showCode = not self.isInputConnected(0)
-            self.outputs[1].socket_code = self.name
-        else:
-            self.showCode = False
-            raw_code = self.outputs[0].socket_code = self.name
-            return raw_code
+    def get_setter_code(self):
+        self.outputs[1].socket_code = self.name
+        self.showCode = not self.isInputConnected(0)
+        brother_code = self.get_other_socket_code(0)
+        input_1_code = self.get_my_input_code(1)
+        other_node = self.getConnectedInputNode(1)
 
-        brotherCode = self.get_other_socket_code(0)
-        setInput = self.get_my_input_code(1)
+        raw_code = "Empty"
+        L_P = "{"
+        R_P = "}"
 
-        syn = self.scene.node_editor.Languages["variable syntax"][self.node_structure][self.scene.node_editor.Languages["Languages"][self.syntax]]\
-            .replace("name", self.name).replace("data type", self.get_datatype()).replace("content", str(setInput)).replace("next", f"\n{brotherCode}")
+        if self.node_usage == 'string':
+            input_1_code = f'"{input_1_code}"'
 
-        raw_code = syn
+
+        if self.syntax == "Python":
+            if self.node_structure == 'single value':
+                python_code = f"""
+{self.name} = {input_1_code}
+{brother_code}"""
+                raw_code = python_code
+
+# Python Array Code
+            elif self.node_structure == 'array':
+                if other_node == None or isinstance(other_node, MakeList):
+                    python_code = f"""
+{self.name} = numpy.array([{input_1_code}], {Numpy_Vars[self.node_usage]})
+{brother_code}"""
+
+                elif isinstance(other_node, UserVar):
+                    python_code = f"""
+{self.name} = {other_node.name}
+{brother_code}"""
+                raw_code = python_code
+
+        elif self.syntax == "C++":
+            if self.node_structure == 'single value':
+                CPP_code = f"""
+{self.scene.node_editor.return_types[self.node_usage][self.scene.node_editor.return_types["Languages"].index(self.syntax)]} {self.name} = {input_1_code};
+{brother_code}"""
+                raw_code = CPP_code
+
+# C++ Array Code
+            elif self.node_structure == 'array':
+                if other_node == None or isinstance(other_node, MakeList):
+                    CPP_code = f"""
+list &lt;{self.node_usage}&gt; {self.name}({L_P}{input_1_code}{R_P});
+{brother_code}"""
+                elif isinstance(other_node, UserVar):
+                    CPP_code = f"""
+list &lt;{self.node_usage}&gt; {self.name} = {other_node.name};
+{brother_code}"""
+                raw_code = CPP_code
+
+# Rust Array Code
+        elif self.syntax == "Rust":
+            if self.node_structure == 'single value':
+                rust_code = f"""
+let {self.name} = {input_1_code};
+{brother_code}"""
+                raw_code = rust_code
+
+            elif self.node_structure == 'array':
+                if other_node == None or isinstance(other_node, MakeList):
+                    rust_code = f"""
+let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = vec![{input_1_code}];
+{brother_code}"""
+
+                elif isinstance(other_node, UserVar):
+                    rust_code = f"""
+let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = {other_node.name}
+{brother_code}"""
+                raw_code = rust_code
+
         return self.grNode.highlight_code(raw_code)
 
-
-class IntegerVar(MasterNode):
-    icon = ""
-    name = "user_integer"
-    node_return = "integer"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = IntegerColor
-
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[2]) if not isSetter else super().__init__(scene, inputs=[0, 2], outputs=[0, 2])
-        self.is_setter = isSetter
-
-    def getNodeCode(self):
-        if self.is_setter:
-            self.showCode = not self.isInputConnected(0)
-            self.outputs[1].socket_code = self.name
-        else:
-            self.showCode = False
-            raw_code = self.outputs[0].socket_code = self.name
-            return raw_code
-
-        brotherCode = self.get_other_socket_code(0)
-        setInput = self.get_my_input_code(1)
-
-        syn = self.scene.node_editor.Languages["variable syntax"][self.node_structure][self.scene.node_editor.Languages["Languages"][self.syntax]] \
-            .replace("name", self.name).replace("data type", self.get_datatype()).replace("content", str(setInput)).replace(
-            "next", f"\n{brotherCode}")
-
-        raw_code = syn
-        return self.grNode.highlight_code(raw_code)
+    def get_getter_code(self):
+        self.showCode = False
+        getCode = self.outputs[0].socket_code = self.name
+        return getCode
 
 
-class BooleanVar(MasterNode):
-    icon = ""
-    name = "user_boolean"
-    node_return = "boolean"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = BooleanColor
-
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[3]) if not isSetter else super().__init__(scene, inputs=[0, 3], outputs=[0, 3])
-        self.is_setter = isSetter
-
-    def getNodeCode(self):
-        if self.is_setter:
-            self.showCode = not self.isInputConnected(0)
-            self.outputs[1].socket_code = self.name
-        else:
-            self.showCode = False
-            raw_code = self.outputs[0].socket_code = self.name
-            return raw_code
-
-        brotherCode = self.get_other_socket_code(0)
-        setInput = self.get_my_input_code(1)
-
-        syn = self.scene.node_editor.Languages["variable syntax"][self.node_structure][self.scene.node_editor.Languages["Languages"][self.syntax]] \
-            .replace("name", self.name).replace("data type", self.get_datatype()).replace("content", str(setInput)).replace(
-            "next", f"\n{brotherCode}")
-
-        raw_code = syn
-        return self.grNode.highlight_code(raw_code)
 
 
-class StringVar(MasterNode):
-    icon = ""
-    name = "user_string"
-    node_return = "string"
-    category = "VARIABLE"
-    sub_category = "VARIABLE"
-    node_color = StringColor
-
-    def __init__(self, scene, isSetter):
-        super().__init__(scene, inputs=[], outputs=[4]) if not isSetter else super().__init__(scene, inputs=[0, 4], outputs=[0, 4])
-        self.is_setter = isSetter
-
-    def getNodeCode(self):
-        if self.is_setter:
-            self.showCode = not self.isInputConnected(0)
-            self.outputs[1].socket_code = self.name
-        else:
-            self.showCode = False
-            raw_code = self.outputs[0].socket_code = self.name
-            return raw_code
-
-        brotherCode = self.get_other_socket_code(0)
-        setInput = f"{chr(34)}{self.get_my_input_code(1)}{chr(34)}"
-
-        syn = self.scene.node_editor.Languages["variable syntax"][self.node_structure][self.scene.node_editor.Languages["Languages"][self.syntax]] \
-            .replace("name", self.name).replace("data type", self.get_datatype()).replace("content", setInput).replace(
-            "next", f"\n{brotherCode}")
-
-        raw_code = syn
-        return self.grNode.highlight_code(raw_code)
-
+    # def getNodeCode(self):
+    #     if self.is_setter:
+    #         self.showCode = not self.isInputConnected(0)
+    #         self.outputs[1].socket_code = self.name
+    #     else:
+    #         self.showCode = False
+    #         raw_code = self.outputs[0].socket_code = self.name
+    #         return raw_code
+    #
+    #     brotherCode = self.get_other_socket_code(0)
+    #     setInput = self.get_my_input_code(1)
+    #
+    #     syn = self.scene.node_editor.Languages["variable syntax"][self.node_structure][self.scene.node_editor.Languages["Languages"][self.syntax]]\
+    #         .replace("name", self.name).replace("data type", self.get_datatype()).replace("content", str(setInput)).replace("next", f"\n{brotherCode}")
+    #
+    #     raw_code = syn
+    #     return self.grNode.highlight_code(raw_code)

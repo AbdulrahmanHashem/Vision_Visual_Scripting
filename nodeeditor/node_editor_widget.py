@@ -16,9 +16,8 @@ from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
 from vvs_app.nodes.default_functions import Print
-from vvs_app.nodes.event_nodes import UserFunction
-from vvs_app.nodes.variables_nodes import FloatVar, IntegerVar, BooleanVar
-from vvs_app.nodes.variables_nodes import StringVar
+from vvs_app.nodes.user_functions_nodes import UserFunction
+from vvs_app.nodes.variables_nodes import UserVar
 
 
 class NodeEditorWidget(QWidget):
@@ -37,38 +36,28 @@ class NodeEditorWidget(QWidget):
         self.filename = None
         self.file_path = ''
 
-        self.Languages = {"Languages": {"Python": 0, "C++": 1, "Rust": 2},
-                         "extensions": ['.py', '.CPP', '.rs'],
-                      "return_syntax": [" -> ", "", " -> "],
-                         "data types": {"mutable": ["", "void", ""],
-                                          "float": ["float", "float", "float"],
-                                        "integer": ["int", "int", "int"],
-                                        "boolean": ["bool", "boolean", "bool"],
-                                         "string": ["str", "string", "str"],
-                                           "list": ["list", "list", "list"],
-                                     "dictionary": ["dict", "dictionary", "dict"],
-                                          "tuple": ["tuple", "tuple", "tuple"]
-                                        },
-               "variable syntax": {"single value": ["name = data type(content)next", "data type name = content;next", ""],
-                                          "array": ["name = np.array(data type,[content])next", "list <data type> name = {content};next", ""]
-                                   },
-                        "function syntax": {"set": ["def name()return:content", "return name() {content}", "fn name()return: {content}"],
-                                           "call": ["name()content", "name();content", ""]
-                                            }
-                          }
+        self.files_extensions = {'Python': '.py', 'C++': '.CPP', 'Rust': '.rs'}
+
+        self.return_types = {
+                            "Languages": ["Python", "C++", "Rust"],
+                              "mutable": ["", "void", ""],
+                                "float": [" -> float", "float", " -> float"],
+                              "integer": [" -> integer", "int", " -> integer"],
+                              "boolean": [" -> boolean", "bool", " -> boolean"],
+                               "string": [" -> string", "string", " -> string"],
+                                 "list": [" -> list", "list", " -> list"],
+                           "dictionary": [" -> dictionary", "dictionary", " -> dictionary"],
+                                "tuple": [" -> tuple", "tuple", " -> tuple"]
+                             }
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
 
         self.create_widget_window()
 
-    def get_datatype(self, syntax, node_return, as_fun_return:bool=False):
-        lang_index = self.scene.node_editor.Languages["Languages"][syntax]
-        get_datatype = self.scene.node_editor.Languages["data types"][node_return][lang_index]
-        if as_fun_return:
-            if get_datatype != "":
-                return f"""{self.scene.node_editor.Languages["return_syntax"][lang_index]}{get_datatype}"""
-        return get_datatype
+    def get_node_return(self, syntax, node_return):
+        index = self.return_types["Languages"].index(syntax)
+        return self.return_types[node_return][index]
 
     def create_widget_window(self):
         """
@@ -349,10 +338,11 @@ class NodeEditorWidget(QWidget):
         output = output.decode('UTF-8')
         error = error.decode('UTF-8')
 
-        colorStyle = f''' style=" Font-size:12px ; color: #FF3333;" '''
-        code = f""" <pre><p style="font-family: Roboto "><span {colorStyle} >{error}</span></p></pre> """
+        colorStyle = f'''  '''
+        code = f""" <pre><p style="font-family: Roboto "><span style=" Font-size:12px ; color: #FF3333;">{error}</span></p></pre> """
+        code_2 = f""" <pre><p style="font-family: Roboto "><span style=" Font-size:12px ; color: #FFFFFF;">{output}</span></p></pre> """
 
-        self.code_output.append(output)
+        self.code_output.append(code_2)
         self.code_output.append(code)
 
     def get_project_directory(self):
@@ -360,22 +350,22 @@ class NodeEditorWidget(QWidget):
 
     def get_save_directory(self):
         data = []
+        current_syntax = self.syntax_selector.currentText()
         self.scene.masterRef.files_widget.get_scripts_dir(self.syntax_selector)
 
-        if self.syntax_selector.currentText() == 'C++':
+        if current_syntax == 'C++':
             Ex = '.h'
-            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            directory = self.get_project_directory() + f"/{current_syntax}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.header_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
-            lang_index = self.Languages["Languages"]["C++"]
-            Ex = self.Languages["extensions"][lang_index]
-            directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
+            Ex = self.files_extensions[current_syntax]
+            directory = self.get_project_directory() + f"/{current_syntax}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.cpp_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
+
         else:
-            lang_index = self.Languages["Languages"][self.syntax_selector.currentText()]
-            Ex = self.Languages["extensions"][lang_index]
+            Ex = self.files_extensions[current_syntax]
             directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
             text_code = self.text_code_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
@@ -383,8 +373,17 @@ class NodeEditorWidget(QWidget):
         return data
 
     def CopyTextCode(self):
-        self.text_code_wnd.selectAll()
-        self.text_code_wnd.copy()
+        if self.syntax_selector.currentText() == "C++":
+            if self.multi_code_wnd.currentWidget() == self.header_wnd:
+                self.header_wnd.selectAll()
+                self.header_wnd.copy()
+            elif self.multi_code_wnd.currentWidget() == self.cpp_wnd:
+                self.cpp_wnd.selectAll()
+                self.cpp_wnd.copy()
+        else:
+            self.text_code_wnd.selectAll()
+            self.text_code_wnd.copy()
+
         self.update_text_code_files()
 
     def syntax_changed(self):
@@ -397,40 +396,46 @@ class NodeEditorWidget(QWidget):
 
     def get_imports(self):
         syntax = self.syntax_selector.currentText()
-
         imports = []
+        if not self.scene.user_nodes_wdg:return imports
+        user_data = self.scene.user_nodes_wdg.user_nodes_data
+
+        used_node_types = [node['node_type'] for node in user_data]
+        used_node_structure = [item['node_structure'] for item in user_data]
+        current_syntax = self.return_types["Languages"].index(syntax)
+
         if syntax == "C++":
-
-            value = {
-                FloatVar.node_type: 'float',
-                IntegerVar.node_type: 'int',
-                BooleanVar.node_type: 'bool',
-                StringVar.node_type: 'string',
-
-            }
-
-            used_node_types = [node.node_type for node in self.scene.nodes]
 
             if used_node_types.__contains__(Print.node_type):
                 imports.append(f'#include <iostream>')
 
-            for data in self.scene.user_nodes_wdg.user_nodes_data:
-                if data[2] == StringVar.node_type:
-                    imports.append("#include <string>")
-                if data[2] == UserFunction.node_type:
-                    imports.append(f"{self.get_datatype(syntax, data[3])} {data[0]}();")
-                elif [FloatVar, IntegerVar, BooleanVar, StringVar].__contains__(data[3]):
-                    imports.append(f'extern {value[data[2]]}{self.get_datatype(syntax, data[3])}{data[0]};')
+            if used_node_types.__contains__('string'):
+                imports.append("#include <string>")
+
+            for data in user_data:
+
+                if data['node_type'] == UserFunction.node_type:
+                    imports.append(f"{self.get_node_return(syntax,data['node_return'])} {data['node_name']}();")
+
+                elif data['node_type'] == UserVar.node_type:
+                    if data['node_structure'] == 'single value':
+                        imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
+                    elif data['node_structure'] == 'array':
+                        imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
+
+        elif syntax == 'Python':
+            if used_node_structure.__contains__('array'):
+                imports.append(f'import numpy')
 
         imports.sort()
         return imports
 
     def UpdateTextCode(self):
         current_syntax = self.syntax_selector.currentText()
+        imports = self.get_imports()
 
         if current_syntax == "C++":
             self.header_wnd.clear()
-            imports = self.get_imports()
             for item in imports:
                 self.header_wnd.append(item)
             self.header_wnd.append('')
@@ -447,6 +452,11 @@ class NodeEditorWidget(QWidget):
 
         else:
             self.text_code_wnd.clear()
+
+            for item in imports:
+                self.text_code_wnd.append(item)
+            self.text_code_wnd.append('')
+
             for node in self.scene.nodes:
                 node.syntax = current_syntax
 

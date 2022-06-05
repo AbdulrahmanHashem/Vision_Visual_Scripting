@@ -123,10 +123,12 @@ class MasterWindow(NodeEditorWindow):
 
         user_text = QLabel("Select Your Project Directory...")
         user_text.setFont(QFont("Roboto", 14))
-        w_image = QPixmap("icons/Dark/VVS_White2.png" if self.global_switches.switches_Dict["Appearance"]['Theme'][0] == 'Dark' else "icons/light/VVS_White2.png")
+        w_image = QPixmap(f"icons/{self.global_switches.switches_Dict['Appearance']['Theme'][0]}/VVS_White1.png")
 
         welcome_image = QLabel()
         welcome_image.setPixmap(w_image)
+        welcome_image.setScaledContents(True)
+
         self.brows_btn = QPushButton("Brows..")
 
         Elayout.addWidget(welcome_image)
@@ -333,6 +335,8 @@ class MasterWindow(NodeEditorWindow):
             self.writeSettings()
             event.accept()
 
+            # hacky fix for PyQt 5.14.x
+            import sys
             sys.exit(0)
 
     def createActions(self):
@@ -748,7 +752,7 @@ class MasterWindow(NodeEditorWindow):
             widget.addItems(content_list)
             return content_list
         else:
-            print(widget, "Widget Not Supported")
+            print(widget, "Widget Not Supported << Get")
             return None
 
     def set_QWidget_content(self, widget, new_value):
@@ -764,7 +768,7 @@ class MasterWindow(NodeEditorWindow):
             widget.clear()
             widget.addItems(new_value)
         else:
-            print(widget, "Widget Not Supported")
+            print(widget, "Widget Not Supported << Set")
 
     def about(self):
         QMessageBox.about(self, "About Calculator NodeEditor Example",

@@ -8,7 +8,6 @@ from qtpy.QtWidgets import QApplication
 from vvs_app.master_window import MasterWindow
 
 # This Import Is Important for Node Registration.. (Do not remove !!!)
-from vvs_app.nodes import *
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "", ".."))
 
 class Splash(QWidget):
@@ -22,7 +21,7 @@ class Splash(QWidget):
         self.setLayout(lo)
 
         Logo = QLabel()
-        pixmap = QPixmap("icons/Dark/VVS_White_Splash.png")
+        pixmap = QPixmap("icons/Dark/VVS_White2.png")
         Logo.setPixmap(pixmap)
         lo.addWidget(Logo)
 
