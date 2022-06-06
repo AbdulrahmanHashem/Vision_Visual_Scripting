@@ -38,17 +38,39 @@ class NodeEditorWidget(QWidget):
 
         self.files_extensions = {'Python': '.py', 'C++': '.CPP', 'Rust': '.rs'}
 
-        self.return_types = {
-                            "Languages": ["Python", "C++", "Rust"],
-                              "mutable": ["", "void", ""],
-                                "float": [" -> float", "float", " -> float"],
-                              "integer": [" -> integer", "int", " -> integer"],
-                              "boolean": [" -> boolean", "bool", " -> boolean"],
-                               "string": [" -> string", "string", " -> string"],
-                                 "list": [" -> list", "list", " -> list"],
-                           "dictionary": [" -> dictionary", "dictionary", " -> dictionary"],
-                                "tuple": [" -> tuple", "tuple", " -> tuple"]
-                             }
+        self.return_types = \
+            {
+                "Languages":
+                    ["Python", "C++", "Rust"],
+                "mutable":
+                    ["", "void", ""],
+                "float":
+                    [" -> float", "float", " -> float"],
+                "integer":
+                    [" -> int", "int", " -> integer"],
+                "boolean":
+                    [" -> bool", "bool", " -> boolean"],
+                "string":
+                    [" -> str", "string", " -> string"],
+                "list":
+                    [" -> list", "list", " -> list"],
+                "dictionary":
+                    [" -> dict", "dictionary", " -> dictionary"],
+                "tuple":
+                    [" -> tuple", "tuple", " -> tuple"]
+            }
+
+        self.L_imports = \
+            {
+                "Print":
+                    ["", "#include <iostream>", ""],
+                "string":
+                    ["", "#include <string>", ""],
+                "array":
+                    ["import numpy", "#include <list>", ""]
+            }
+
+        self.declaration = {}
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
@@ -397,35 +419,39 @@ class NodeEditorWidget(QWidget):
     def get_imports(self):
         syntax = self.syntax_selector.currentText()
         imports = []
-        if not self.scene.user_nodes_wdg:return imports
+        if not self.scene.user_nodes_wdg: return imports
         user_data = self.scene.user_nodes_wdg.user_nodes_data
+        scene_nodes = self.scene.nodes
 
-        used_node_types = [node['node_type'] for node in user_data]
+        variables_types = [node['node_usage'] for node in user_data]
+        function_types = [node.node_type for node in scene_nodes]
         used_node_structure = [item['node_structure'] for item in user_data]
         current_syntax = self.return_types["Languages"].index(syntax)
 
+        if function_types.__contains__(Print.node_type):
+            imports.append(self.L_imports[Print.name][current_syntax])
+
+        if variables_types.__contains__('string'):
+            imports.append(self.L_imports["string"][current_syntax])
+
+        if used_node_structure.__contains__('array'):
+            imports.append(self.L_imports["array"][current_syntax])
+
         if syntax == "C++":
-
-            if used_node_types.__contains__(Print.node_type):
-                imports.append(f'#include <iostream>')
-
-            if used_node_types.__contains__('string'):
-                imports.append("#include <string>")
-
+            # print(FUNCTIONS)
             for data in user_data:
-
-                if data['node_type'] == UserFunction.node_type:
+                if data['node_type'] == UserFunction.node_type and data['node_name'] != "main":
                     imports.append(f"{self.get_node_return(syntax,data['node_return'])} {data['node_name']}();")
 
                 elif data['node_type'] == UserVar.node_type:
-                    if data['node_structure'] == 'single value':
-                        imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
-                    elif data['node_structure'] == 'array':
-                        imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
-
-        elif syntax == 'Python':
-            if used_node_structure.__contains__('array'):
-                imports.append(f'import numpy')
+                    if data['declaration'] == "global":
+                        if data['node_structure'] == 'single value':
+                            imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
+                        elif data['node_structure'] == 'array':
+                            imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
+        # elif syntax == 'Python':
+        #     if used_node_structure.__contains__('array'):
+        #         imports.append(f'import numpy')
 
         imports.sort()
         return imports

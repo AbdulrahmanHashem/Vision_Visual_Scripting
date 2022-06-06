@@ -200,44 +200,31 @@
 #         sys.exit(app.exec_())
 
 
-import numpy
-
-
-def user_function():
+def main():
     Name = ""
-
     Name = input("Name")
-
     Age = 0
-
     Age = input("Age")
-
     Age = int(Age)
-
-    user_float = 6.0
-
-    user_boolean = (((((((Age + 5) - user_float) * user_float) / user_float) > 25) and (
-                ((((Age + 5) - user_float) * user_float) / user_float) < 20)) == (
-                                (((((Age + 5) - user_float) * user_float) / user_float) > 25) and (
-                                    ((((Age + 5) - user_float) * user_float) / user_float) < 20)))
-
+    user_integer = 5
+    user_boolean = (((((Age + user_integer) - user_integer) * user_integer) / user_integer) > 25)
     if user_boolean:
-
-        print(Name)
-
-        print(Age)
-
-
-    else:
-
-        user_string = numpy.array(["under age or ", "over age"], 'S')
-
+        user_string = "under age or ", "over age"
         for item in range(Age):
 
             for item in user_string:
                 print(item)
+    else:
+        if (((((Age + user_integer) - user_integer) * user_integer) / user_integer) < 20):
+            user_string = "under age or ", "over age"
+            for item in range(Age):
+                for item in user_string:
+                    print(item)
+        else:
+            print(Name)
+            print(Age)
 
 
-user_function()
+main()
 
 

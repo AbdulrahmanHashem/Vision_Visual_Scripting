@@ -132,21 +132,24 @@ class UserNodesList(QTabWidget):
     def create_user_node(self, name, node_id, type, node_return, node_structure, node_usage, user=False):
         if type == UserVar.node_type:
             node = UserVar
-        elif type == UserFunction.node_type:
+        else: # type == UserFunction.node_type
             node = UserFunction
 
         # Get new Variable type and construct new Variable object
-        node = get_class_by_type(type)
+        # node = get_class_by_type(type)
         new_node = self.MakeCopyOfClass(node)
         new_node.node_return = node_return
         new_node.node_structure = node_structure
         new_node.node_usage = node_usage
-        node_data = {'node_name':name,
-                     'node_id':node_id,
-                     'node_usage':node_usage,
-                     'node_type':type,
-                     'node_return':node_return,
-                     'node_structure':node_structure}
+        node_data = {'node_name': name,
+                     'node_id': node_id,
+                     'node_usage': node_usage,
+                     'node_type': type,
+                     'node_return': node_return,
+                     'node_structure': node_structure}
+
+        if node == UserVar:
+            node_data['declaration'] = new_node.declaration
 
         # Add new copy of Var class Info to Dict of USER_VARS
         new_id = self.set_user_node_Id_now(new_node)
@@ -162,13 +165,13 @@ class UserNodesList(QTabWidget):
             A_list = self.var_list
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
+        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list, new_node.declaration if node == UserVar else "function")
 
         if user:
             self.scene.history.storeHistory("Created User Node ", setModified=True)
         self.scene.node_editor.UpdateTextCode()
 
-    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
+    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget, declaration="local"):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else "")
@@ -182,6 +185,8 @@ class UserNodesList(QTabWidget):
         item.setData(80, node_type)
 
         item.setData(90, new_node_ID)
+
+        item.setData(92, declaration)
 
         item.setData(91, name)
 
@@ -214,7 +219,7 @@ class UserNodesList(QTabWidget):
             self.return_type.currentIndexChanged.connect(lambda: self.update_node_return(item.data(91), item.data(90)))
             self.proprietiesWdg.create_properties_widget("Return Type", self.return_type)
 
-        elif UserVar.node_type == item.data(80):
+        elif item.data(80) == UserVar.node_type:
             self.structure_type = QComboBox()
 
             self.structure_type.addItems(["single value", "array"])
@@ -223,12 +228,34 @@ class UserNodesList(QTabWidget):
             self.structure_type.currentIndexChanged.connect(lambda: self.update_node_structure_type(item.data(91), item.data(90)))
             self.proprietiesWdg.create_properties_widget("Structure Type", self.structure_type)
 
+            self.declaration_type = QComboBox()
+
+            self.declaration_type.addItems(["local", "global"])
+
+            self.declaration_type.setCurrentText(self.get_user_node_by_id(item.data(90)).declaration)
+            self.declaration_type.currentIndexChanged.connect(lambda: self.update_node_declaration_type(item.data(91), item.data(90)))
+            self.proprietiesWdg.create_properties_widget("Declaration", self.declaration_type)
+
+
         # Create user_node Delete button
         self.delete_btn = QPushButton(f"Delete {item.data(91)}")
         self.delete_btn.clicked.connect(lambda: self.delete_node(item.data(91), user=True))
         self.delete_btn.setShortcut(
             QKeySequence(f"Shift+{self.scene.masterRef.global_switches.switches_Dict['Key Mapping']['Delete']}"))
         self.proprietiesWdg.create_properties_widget("Delete", self.delete_btn)
+
+    def update_node_declaration_type(self, node_name, node_id):
+        declaration_type = self.declaration_type.currentText()
+        node_ref = self.get_user_node_by_id(node_id)
+        node_ref.declaration = declaration_type
+
+        for item in self.user_nodes_data:
+            if item['node_name'] == node_name:
+                item['declaration'] = declaration_type
+
+        for node in self.scene.nodes:
+            if node.name == node_name:
+                node.declaration = declaration_type
 
     def update_node_structure_type(self, node_name, node_id):
         structure_type = self.structure_type.currentText()

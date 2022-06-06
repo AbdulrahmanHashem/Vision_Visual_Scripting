@@ -13,6 +13,7 @@ from datetime import datetime
 from vvs_app.editor_files_wdg import FilesWDG
 from vvs_app.global_switches import GlobalSwitches
 from vvs_app.master_node import MasterNode
+from vvs_app.nodes.language_syntax import make_nodes
 from vvs_app.nodes.nodes_configuration import *
 
 
@@ -35,6 +36,7 @@ class NodeEditorWindow(QMainWindow):
 
         self.global_switches = GlobalSwitches(master=self)
 
+        # make_nodes()
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
 

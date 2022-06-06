@@ -20,6 +20,7 @@ class UserVar(MasterNode):
     name = "user_variable"
     category = "VARIABLE"
     sub_category = "VARIABLE"
+    declaration = "local"
 
     def __init__(self, scene, isSetter, node_usage=None):
         if not self.node_usage: self.node_usage = node_usage
