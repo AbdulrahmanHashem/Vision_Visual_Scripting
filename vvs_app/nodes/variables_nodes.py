@@ -98,12 +98,12 @@ let {self.name} = {input_1_code};
             elif self.node_structure == 'array':
                 if other_node == None or isinstance(other_node, MakeList):
                     rust_code = f"""
-let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = vec![{input_1_code}];
+let mut {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = vec![{input_1_code}];
 {brother_code}"""
 
                 elif isinstance(other_node, UserVar):
                     rust_code = f"""
-let {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = {other_node.name}
+let mut {self.name}: Vec&lt;{Rust_Vars[self.node_usage]}&gt; = {other_node.name}
 {brother_code}"""
                 raw_code = rust_code
 

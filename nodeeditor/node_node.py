@@ -173,28 +173,29 @@ class Node(Serializable):
 
         # create new sockets
         counter = 0
-        for item in inputs:
-            socket = Socket(
-                node=self, index=counter, position=self.input_socket_position,
-                socket_type=item, multi_edges=self.input_multi_edged,
-                count_on_this_node_side=len(inputs), is_input=True)
+        if inputs:
+            for item in inputs:
+                socket = Socket(node=self, index=counter, position=self.input_socket_position,
+                    socket_type=item, multi_edges=self.input_multi_edged,
+                    count_on_this_node_side=len(inputs), is_input=True)
 
-            socket.is_multi_edges = True if socket.socket_type == 0 else False
+                socket.is_multi_edges = True if socket.socket_type == 0 else False
 
-            counter += 1
-            self.inputs.append(socket)
+                counter += 1
+                self.inputs.append(socket)
 
         counter = 0
-        for item in outputs:
-            socket = Socket(
-                node=self, index=counter, position=self.output_socket_position,
-                socket_type=item, multi_edges=self.output_multi_edged,
-                count_on_this_node_side=len(outputs), is_input=False)
+        if outputs:
+            for item in outputs:
+                socket = Socket(
+                    node=self, index=counter, position=self.output_socket_position,
+                    socket_type=item, multi_edges=self.output_multi_edged,
+                    count_on_this_node_side=len(outputs), is_input=False)
 
-            socket.is_multi_edges = False if socket.socket_type == 0 else True
+                socket.is_multi_edges = False if socket.socket_type == 0 else True
 
-            counter += 1
-            self.outputs.append(socket)
+                counter += 1
+                self.outputs.append(socket)
 
         self.grNode.AutoResizeGrNode()
 

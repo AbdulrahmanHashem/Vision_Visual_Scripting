@@ -1,5 +1,6 @@
 from qtpy.QtGui import *
 
+from nodeeditor.node_socket import Socket
 from vvs_app.nodes.nodes_configuration import *
 from vvs_app.master_node import MasterNode
 from textwrap import *
@@ -542,25 +543,24 @@ class Return(MasterNode):
     def getNodeCode(self):
         raw_code = "Empty"
         self.showCode = not self.isInputConnected(0)
-        brotherCode = self.get_other_socket_code(0)
         return_code = self.get_my_input_code(1)
 
         if self.syntax == "Python":
             python_code = f"""
 return {return_code}
-{brotherCode}"""
+"""
             raw_code = python_code
 
         elif self.syntax == "C++":
             CPP_code = f"""
 return {return_code};
-{brotherCode}"""
+"""
             raw_code = CPP_code
 
         elif self.syntax == "Rust":
             rust_code = f"""
 return {return_code};
-{brotherCode}"""
+"""
             raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
 
@@ -573,9 +573,24 @@ class MakeList(MasterNode):
     sub_category = "List Operator"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=['wildcard', 'wildcard', 'wildcard', 'wildcard'], outputs=['array'])
+        super().__init__(scene, inputs=[6], outputs=['array'])
+
+    def if_all_connected(self):
+        count = 0
+        for socket in self.inputs:
+            if self.isInputConnected(self.inputs.index(socket)):
+                count += 1
+
+        if count == len(self.inputs):
+            socket = Socket(node=self, index=len(self.inputs), position=self.input_socket_position,
+                            socket_type=6, multi_edges=self.input_multi_edged,
+                            count_on_this_node_side=len(self.inputs), is_input=True)
+            self.inputs.append(socket)
+
+            self.grNode.AutoResizeGrNode()
 
     def getNodeCode(self):
+        self.if_all_connected()
         raw_code = "Empty"
         self.showCode = False
         return_code = ''
@@ -593,6 +608,119 @@ class MakeList(MasterNode):
         raw_code = code
         self.outputs[0].socket_code = code
         return self.grNode.highlight_code(raw_code)
+
+
+class ListAppend(MasterNode):
+    icon = "add.png"
+    name = "Append"
+    category = "FUNCTION"
+    sub_category = "List Operator"
+    node_color = "#90702070"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 6, 6], outputs=[0])
+
+    def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        o_list = self.get_my_input_code(1)
+        new_value = self.get_my_input_code(2)
+
+        next = self.get_other_socket_code(0)
+
+        if self.syntax == "Python":
+            L_SP = "["
+            R_SP = "]"
+            if self.isInputConnected(2):
+                L_SP = ""
+                R_SP = ""
+            python_code = f"""
+{o_list} = numpy.append({o_list}, {L_SP}{new_value}{R_SP})
+{next}"""
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+            if self.getInputs(2):
+                if self.getInputs(2)[0].node_structure == "single value":
+                    new_value = f"1, {new_value}"
+                else:
+                    new_value = f"{new_value}.begin(),{new_value}..end()"
+            CPP_code = f"""
+{o_list}.assign({new_value})
+{next}"""
+            raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            if self.getInputs(2):
+                if self.getInputs(2)[0].node_structure == "single value":
+                    rust_code = f"""
+{o_list}.push({new_value});
+{next}"""
+                else:
+                    rust_code = f"""
+for item in &{new_value}
+{L_P}
+{Indent(f"{o_list}.push(item);")}
+{R_P}
+{next}"""
+                    new_value = f""
+
+            raw_code = rust_code
+        return self.grNode.highlight_code(raw_code)
+
+
+# class ListRemove(MasterNode):
+#     icon = "sub.png"
+#     name = "Remove"
+#     category = "FUNCTION"
+#     sub_category = "List Operator"
+#     node_color = "#90702070"
+#
+#     def __init__(self, scene):
+#         super().__init__(scene, inputs=[0, 6, 6], outputs=[0])
+#
+#     def getNodeCode(self):
+#         raw_code = "Empty"
+#         self.showCode = not self.isInputConnected(0)
+#         o_list = self.get_my_input_code(1)
+#         new_value = self.get_my_input_code(2)
+#
+#         next = self.get_other_socket_code(0)
+#
+#         if self.syntax == "Python":
+#             L_SP = "["
+#             R_SP = "]"
+#             if self.isInputConnected(2):
+#                 L_SP = ""
+#                 R_SP = ""
+#             python_code = f"""
+# {o_list} = numpy.delete({o_list}, {L_SP}{new_value}{R_SP})
+# {next}"""
+#             raw_code = python_code
+#
+#         elif self.syntax == "C++":
+#             CPP_code = f"""
+# {o_list}.remove({new_value})
+# {next}"""
+#             raw_code = CPP_code
+#
+#         elif self.syntax == "Rust":
+#             if self.getInputs(2):
+#                 if self.getInputs(2)[0].node_structure == "single value":
+#                     rust_code = f"""
+# {o_list}.pop({new_value});
+# {next}"""
+#                 else:
+#                     rust_code = f"""
+# for item in &{new_value}
+# {L_P}
+# {Indent(f"{o_list}.push(item);")}
+# {R_P}
+# {next}"""
+#                     new_value = f""
+#
+#             raw_code = rust_code
+#         return self.grNode.highlight_code(raw_code)
 
 
 

@@ -201,7 +201,12 @@
 import numpy
 
 
+
 def main() -> int:
+
+    li = numpy.array([1, 2, 3], int)
+    li = numpy.delete(li, [1])
+    print(li)
     Name = ""
 
     Name = input("Name")
