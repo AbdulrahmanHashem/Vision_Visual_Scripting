@@ -409,7 +409,6 @@ class NodeScene(Serializable):
             self.id = data['id']
 
         self.node_editor.syntax_selector.setCurrentText(data['syntax'])
-        print(data['syntax'])
 
         # Create a list of all Existing User Nodes
         current_user_nodes = []
@@ -426,7 +425,8 @@ class NodeScene(Serializable):
                                                      node_id=user_node['node_id'],
                                                      node_structure=user_node['node_structure'],
                                                      node_usage=user_node['node_usage'],
-                                                     node_return=user_node['node_return'])
+                                                     node_return=user_node['node_return'],
+                                                     declaration=user_node['declaration'])
 
         # Create a list of all Stored User Nodes at the History Stamp
         stored_user_nodes = [node_data['node_name'] for node_data in data['user_nodes']]

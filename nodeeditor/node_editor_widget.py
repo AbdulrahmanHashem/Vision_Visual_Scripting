@@ -15,7 +15,7 @@ from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
-from vvs_app.nodes.default_functions import Print
+from vvs_app.nodes.default_functions import Print, UserInput
 from vvs_app.nodes.user_functions_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import UserVar
 
@@ -45,32 +45,20 @@ class NodeEditorWidget(QWidget):
                 "mutable":
                     ["", "void", ""],
                 "float":
-                    [" -> float", "float", " -> float"],
+                    [" -> float", "float", " -> f32"],
                 "integer":
-                    [" -> int", "int", " -> integer"],
+                    [" -> int", "int", " -> i32"],
                 "boolean":
-                    [" -> bool", "bool", " -> boolean"],
+                    [" -> bool", "bool", " -> bool"],
                 "string":
-                    [" -> str", "string", " -> string"],
+                    [" -> str", "string", " -> &str"],
                 "list":
-                    [" -> list", "list", " -> list"],
+                    [" -> list", "list", " -> ()"],
                 "dictionary":
-                    [" -> dict", "dictionary", " -> dictionary"],
+                    [" -> dict", "dictionary", " -> ()"],
                 "tuple":
-                    [" -> tuple", "tuple", " -> tuple"]
+                    [" -> tuple", "tuple", " -> ()"]
             }
-
-        self.L_imports = \
-            {
-                "Print":
-                    ["", "#include <iostream>", ""],
-                "string":
-                    ["", "#include <string>", ""],
-                "array":
-                    ["import numpy", "#include <list>", ""]
-            }
-
-        self.declaration = {}
 
         # crate graphics scene
         self.scene = NodeScene(masterRef, nodeeditor=self)
@@ -428,30 +416,40 @@ class NodeEditorWidget(QWidget):
         used_node_structure = [item['node_structure'] for item in user_data]
         current_syntax = self.return_types["Languages"].index(syntax)
 
-        if function_types.__contains__(Print.node_type):
-            imports.append(self.L_imports[Print.name][current_syntax])
+        if syntax == 'Python':
+            if used_node_structure.__contains__('array'):
+                imports.append("import numpy")
 
-        if variables_types.__contains__('string'):
-            imports.append(self.L_imports["string"][current_syntax])
+            for data in user_data:
+                if data['node_type'] == UserVar.node_type and data['declaration'] == "global":
+                    imports.append(f'global {data["node_name"]}')
+        elif syntax == "C++":
+            if variables_types.__contains__('string'):
+                imports.append("#include <string>")
 
-        if used_node_structure.__contains__('array'):
-            imports.append(self.L_imports["array"][current_syntax])
+            if used_node_structure.__contains__('array'):
+                imports.append("#include <list>")
 
-        if syntax == "C++":
-            # print(FUNCTIONS)
+            if function_types.__contains__(UserInput.node_type) or function_types.__contains__(Print.node_type):
+                if imports.__contains__("#include <iostream>"):
+                    imports.append("#include <iostream>")
+
             for data in user_data:
                 if data['node_type'] == UserFunction.node_type and data['node_name'] != "main":
                     imports.append(f"{self.get_node_return(syntax,data['node_return'])} {data['node_name']}();")
 
-                elif data['node_type'] == UserVar.node_type:
-                    if data['declaration'] == "global":
-                        if data['node_structure'] == 'single value':
-                            imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
-                        elif data['node_structure'] == 'array':
-                            imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
-        # elif syntax == 'Python':
-        #     if used_node_structure.__contains__('array'):
-        #         imports.append(f'import numpy')
+                elif data['node_type'] == UserVar.node_type and data['declaration'] == "global":
+                    if data['node_structure'] == 'single value':
+                        imports.append(f'extern {self.return_types[data["node_usage"]][current_syntax]} {data["node_name"]};')
+                    elif data['node_structure'] == 'array':
+                        imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
+        elif syntax == 'Rust':
+            if function_types.__contains__(UserInput.node_type):
+                # if imports.__contains__("use std::io::stdin;"):
+                imports.append("use std::io::stdin;")
+            for data in user_data:
+                if data['node_type'] == UserVar.node_type and data['declaration'] == "global":
+                    imports.append(f'static {data["node_name"]}: {self.return_types[data["node_usage"]][current_syntax].replace(" -> ", "")} = none;')
 
         imports.sort()
         return imports

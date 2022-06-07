@@ -163,6 +163,52 @@ for {item_name} in &{array}
         return self.grNode.highlight_code(raw_code)
 
 
+class ConvertDataType(MasterNode):
+    icon = "ConvertDataType.png"
+    name = "Convert Data Type"
+    category = "FUNCTION"
+    sub_category = "Process"
+    node_color = "#905050FF"
+
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[0, 6, 6], outputs=[0])
+
+    def getNodeCode(self):
+        raw_code = "Empty"
+        self.showCode = not self.isInputConnected(0)
+        brotherCode = self.get_other_socket_code(0)
+        inputName = self.get_my_input_code(1)
+
+        other_input_name = ""
+        type = ""
+        if self.getInputs(2):
+            other_input_name = self.get_my_input_code(2)
+            current_syntax = self.scene.node_editor.return_types["Languages"].index(self.syntax)
+            type = self.scene.node_editor.return_types[self.getInputs(2)[0].node_usage][current_syntax].replace(" -> ", "")
+        equal = " = "
+        if inputName == "" or inputName is None:
+            equal = ''
+
+        if self.syntax == "Python":
+            python_code = f"""
+{other_input_name}{equal} {type}({inputName})
+{brotherCode}"""
+            raw_code = python_code
+
+        elif self.syntax == "C++":
+            CPP_code = f"""
+istringstream({inputName}) >> {other_input_name};
+{brotherCode}"""
+            raw_code = CPP_code
+
+        elif self.syntax == "Rust":
+            rust_code = f"""
+let {other_input_name}: {type} {equal} {inputName}.trim().parse().unwrap();
+{brotherCode}"""
+            raw_code = rust_code
+        return self.grNode.highlight_code(raw_code)
+
+
 # Logic
 class And(MasterNode):
     icon = "and.png"
@@ -372,7 +418,7 @@ class UserInput(MasterNode):
         inputCode = self.get_my_input_code(2)
 
         equal = " = "
-        rr = f'println!("{inputCode}");'
+        rr = f'\nprintln!("{inputCode}");'
         if inputName == "" or inputName is None:
             equal = ''
         if inputCode == "" or inputCode is None:
@@ -395,7 +441,7 @@ cout &lt;&lt; "{inputCode}", cin >> {inputName};
 
         elif self.syntax == "Rust":
             rust_code = f"""
-{rr}
+let mut {inputName} = String::new();{rr}
 stdin().read_line(&mut {inputName}).unwrap();
 {brotherCode}"""
 
@@ -474,7 +520,7 @@ cout &lt;&lt; {printCode};
 
         elif self.syntax == "Rust":
             connected = self.isInputConnected(1)
-            if connected: printCode = '"{:?}", ' + printCode
+            if connected: printCode = '"{}", ' + printCode
             rust_code = f"""
 println!({printCode});
 {brotherCode}"""

@@ -10,6 +10,7 @@ class UserFunction(MasterNode):
     category = "User_Function"
     sub_category = "User_Function"
     node_usage = 'function'
+    declaration = "function"
 
     def __init__(self, scene, isSetter, node_usage='function'):
         if not self.node_usage: self.node_usage = node_usage
@@ -44,7 +45,8 @@ def {self.name}(){self.get_return()}:
 
         elif self.syntax == "Rust":
             rust_code = f"""
-fn {self.name}(){self.get_return()} {L_P}
+fn {self.name}(){self.get_return()}
+{L_P}
 {Indent(childCode)}
 {R_P}"""
             raw_code = rust_code

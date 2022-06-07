@@ -122,14 +122,16 @@ class UserNodesList(QTabWidget):
             usage = self.varCompoBox.currentText()
             type = self.varCompoBox.itemData(self.varCompoBox.currentIndex())
             node_name = f'user_{usage}'
+            declaration = "local"
         else:
             node_name = 'user_function'
             type = self.function_compo_box.itemData(self.function_compo_box.currentIndex())
             usage = 'function'
+            declaration = 'function'
 
-        self.create_user_node(self.autoNodeRename(node_name), node_id=None, type=type, user=True, node_usage=usage, node_structure='single value', node_return='mutable')
+        self.create_user_node(self.autoNodeRename(node_name), node_id=None, type=type, user=True, node_usage=usage, node_structure='single value', node_return='mutable', declaration=declaration)
 
-    def create_user_node(self, name, node_id, type, node_return, node_structure, node_usage, user=False):
+    def create_user_node(self, name, node_id, type, node_return, node_structure, node_usage, declaration, user=False):
         if type == UserVar.node_type:
             node = UserVar
         else: # type == UserFunction.node_type
@@ -141,16 +143,14 @@ class UserNodesList(QTabWidget):
         new_node.node_return = node_return
         new_node.node_structure = node_structure
         new_node.node_usage = node_usage
+        new_node.declaration = declaration
         node_data = {'node_name': name,
                      'node_id': node_id,
                      'node_usage': node_usage,
                      'node_type': type,
                      'node_return': node_return,
-                     'node_structure': node_structure}
-
-        if node == UserVar:
-            node_data['declaration'] = new_node.declaration
-
+                     'node_structure': node_structure,
+                     'declaration': declaration}
         # Add new copy of Var class Info to Dict of USER_VARS
         new_id = self.set_user_node_Id_now(new_node)
         new_node.nodeID = node_data['node_id'] = new_id
@@ -165,13 +165,13 @@ class UserNodesList(QTabWidget):
             A_list = self.var_list
 
         # Add new QListItem to the UI List using Init Data
-        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list, new_node.declaration if node == UserVar else "function")
+        self.addMyItem(new_node.name, new_node.icon, new_id, node.node_type, A_list)
 
         if user:
             self.scene.history.storeHistory("Created User Node ", setModified=True)
         self.scene.node_editor.UpdateTextCode()
 
-    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget, declaration="local"):
+    def addMyItem(self, name, icon=None, new_node_ID=int, node_type=int, List=QListWidget):
         item = QListWidgetItem(name, List)  # can be (icon, text, parent, <int>type)
 
         pixmap = QPixmap(icon if icon is not None else "")
@@ -185,8 +185,6 @@ class UserNodesList(QTabWidget):
         item.setData(80, node_type)
 
         item.setData(90, new_node_ID)
-
-        item.setData(92, declaration)
 
         item.setData(91, name)
 
@@ -221,17 +219,14 @@ class UserNodesList(QTabWidget):
 
         elif item.data(80) == UserVar.node_type:
             self.structure_type = QComboBox()
-
             self.structure_type.addItems(["single value", "array"])
-
             self.structure_type.setCurrentText(self.get_user_node_by_id(item.data(90)).node_structure)
             self.structure_type.currentIndexChanged.connect(lambda: self.update_node_structure_type(item.data(91), item.data(90)))
             self.proprietiesWdg.create_properties_widget("Structure Type", self.structure_type)
 
+
             self.declaration_type = QComboBox()
-
             self.declaration_type.addItems(["local", "global"])
-
             self.declaration_type.setCurrentText(self.get_user_node_by_id(item.data(90)).declaration)
             self.declaration_type.currentIndexChanged.connect(lambda: self.update_node_declaration_type(item.data(91), item.data(90)))
             self.proprietiesWdg.create_properties_widget("Declaration", self.declaration_type)

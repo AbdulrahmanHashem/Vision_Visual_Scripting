@@ -197,7 +197,7 @@ Languages = \
                                 "user input": [[[0, 6, 4], [0]],
                                                "\ncontent1 = input(content2)\nnext",
                                                "\ncout &lt;&lt; content1, cin >> content2;\nnext",
-                                               "\nlet mut content1 = string::new()\nprintln!(content2);\nstdin().read_line(&mut content1).unwrap();\nnext",
+                                               "\nlet mut content1 = String::new();\nprintln!(content2);\nstdin().read_line(&mut content1).unwrap();\nnext",
                                                "#303030"]
                             },
                         "Output":

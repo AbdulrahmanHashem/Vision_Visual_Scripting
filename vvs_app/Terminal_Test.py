@@ -198,33 +198,52 @@
 #     with redirect_stdout(console), redirect_stderr(redirect):
 #         console.show()
 #         sys.exit(app.exec_())
+import numpy
 
 
-def main():
+def main() -> int:
     Name = ""
+
     Name = input("Name")
+
     Age = 0
+
     Age = input("Age")
+
     Age = int(Age)
+
     user_integer = 5
+
     user_boolean = (((((Age + user_integer) - user_integer) * user_integer) / user_integer) > 25)
+
     if user_boolean:
-        user_string = "under age or ", "over age"
+
+        user_string = numpy.array(["under age", "or ", "over age"], 'S')
+
         for item in range(Age):
 
             for item in user_string:
                 print(item)
+
+
+
     else:
+
         if (((((Age + user_integer) - user_integer) * user_integer) / user_integer) < 20):
-            user_string = "under age or ", "over age"
+
+            user_string = numpy.array(["under age", "or ", "over age"], 'S')
+
             for item in range(Age):
+
                 for item in user_string:
                     print(item)
+
+
+
         else:
+
             print(Name)
+
             print(Age)
 
-
 main()
-
-

@@ -1,16 +1,11 @@
-#   Language Bugs
-# C++
-#	- c++ includes
-#	- remove main function header declaration
-#	- move using namespace std; form .cpp to .h file
-# Rust
-#	- print doesn't work with normal variables
-#
-#
 # # inProgress
 #
 # # urgent
 #     - B c++ code / C++ includes
+#     - append node.
+#     - remove node.
+#     - convert to light mod and take pics same as the ones in the book.
+#     - unify the code writing style across the program
 #
 # # ToDos
 #     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
