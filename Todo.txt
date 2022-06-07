@@ -1,29 +1,29 @@
 # # inProgress
 #
 # # urgent
-#     - B c++ code / C++ includes
 #     - append node.
 #     - remove node.
 #     - convert to light mod and take pics same as the ones in the book.
-#     - unify the code writing style across the program
+#     - unify the code writing style across the program *.
 #
 # # ToDos
-#     - B enabling input in the terminal / Adding windows cmd and running the python interpreter
+#     - enabling input in the terminal / Adding windows cmd and running the python interpreter
+#     - A save all graphs & close all graphs QActions
 #
 # # Done
+#     - c++ code / C++ includes
 #     - A list type combobox
 #     - A Graph background color
 #     - Missing Icons
-#     - Splash Screen
-#     - B Add light Ui Modes
-#     - S save all graphs & close all graphs QActions
-#     - A Deleting Vars and Events.
+#     - A Splash Screen
+#     - Add light Ui Mode
+#     - A Deleting Vars and Events from list.
 #     - S functions category open and close indicators.
 #     - S functions categories (Tree Widget).
-#     - warning if the shortcut is already in use.
-#     - hold reset btn to reset settings with a progress par.
-#     - Socket name For each socket on the node itself.
+#     - A warning if the shortcut is already in use.
+#     - A hold reset btn to reset settings with a progress par.
+#     - S Socket name For each socket on the node itself.
 #     - fixing input widgets.
-#     - node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things.
-#     - ** Always save before closing option.
-#     - default node content serialisation.
+#     - S node auto sizing based on sockets and node content to compensate for the name lbl size and amongst other things.
+#     - Always save before closing option.
+#     - S node content serialisation.
