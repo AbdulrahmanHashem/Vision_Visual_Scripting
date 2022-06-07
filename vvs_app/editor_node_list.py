@@ -22,7 +22,7 @@ class NodeList(QTreeWidget):
         self.header().hide()
         self.setRootIsDecorated(False)
         self.setColumnCount(2)
-        self.setColumnWidth(0, 70)
+        self.setColumnWidth(0, 100)
 
         self.addMyFunctions()
 

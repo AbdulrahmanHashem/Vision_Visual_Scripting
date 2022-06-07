@@ -198,57 +198,52 @@
 #     with redirect_stdout(console), redirect_stderr(redirect):
 #         console.show()
 #         sys.exit(app.exec_())
-import numpy
 
 
 
-def main() -> int:
 
-    li = numpy.array([1, 2, 3], int)
-    li = numpy.delete(li, [1])
-    print(li)
-    Name = ""
 
-    Name = input("Name")
 
-    Age = 0
 
-    Age = input("Age")
+AhmedAge = 22
 
-    Age = int(Age)
 
-    user_integer = 5
+def CalculateAge():
+    if (AhmedAge > 50):
 
-    user_boolean = (((((Age + user_integer) - user_integer) * user_integer) / user_integer) > 25)
-
-    if user_boolean:
-
-        user_string = numpy.array(["under age", "or ", "over age"], 'S')
-
-        for item in range(Age):
-
-            for item in user_string:
-                print(item)
+        print("Old")
 
 
 
     else:
 
-        if (((((Age + user_integer) - user_integer) * user_integer) / user_integer) < 20):
+        print("Young")
 
-            user_string = numpy.array(["under age", "or ", "over age"], 'S')
 
-            for item in range(Age):
-
-                for item in user_string:
-                    print(item)
+CalculateAge()
 
 
 
-        else:
 
-            print(Name)
 
-            print(Age)
 
-main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
