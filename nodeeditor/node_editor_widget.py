@@ -104,20 +104,20 @@ class NodeEditorWidget(QWidget):
         text_code_layout.addLayout(code_wnd_bar)
 
         self.stacked_code_wnd = QStackedWidget()
-        self.text_code_wnd = QTextEdit()
+        self.code_viewer = QTextEdit()
         self.multi_code_wnd = QTabWidget()
 
         self.header_wnd = QTextEdit()
-        self.cpp_wnd = QTextEdit()
+        self.cpp_code_viewer_wnd = QTextEdit()
 
         self.multi_code_wnd.addTab(self.header_wnd, '    .H    ')
-        self.multi_code_wnd.addTab(self.cpp_wnd, '     .CPP    ')
+        self.multi_code_wnd.addTab(self.cpp_code_viewer_wnd, '     .CPP    ')
 
-        self.text_code_wnd.setReadOnly(True)
+        self.code_viewer.setReadOnly(True)
         self.header_wnd.setReadOnly(True)
-        self.cpp_wnd.setReadOnly(True)
+        self.cpp_code_viewer_wnd.setReadOnly(True)
 
-        self.stacked_code_wnd.addWidget(self.text_code_wnd)
+        self.stacked_code_wnd.addWidget(self.code_viewer)
 
         self.stacked_code_wnd.addWidget(self.multi_code_wnd)
         self.stacked_code_wnd.setCurrentIndex(1)
@@ -371,13 +371,13 @@ class NodeEditorWidget(QWidget):
 
             Ex = self.files_extensions[current_syntax]
             directory = self.get_project_directory() + f"/{current_syntax}/{self.windowTitle().replace('*', '')}{Ex}"
-            text_code = self.cpp_wnd.toPlainText()
+            text_code = self.cpp_code_viewer_wnd.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
         else:
             Ex = self.files_extensions[current_syntax]
             directory = self.get_project_directory() + f"/{self.syntax_selector.currentText()}/{self.windowTitle().replace('*', '')}{Ex}"
-            text_code = self.text_code_wnd.toPlainText()
+            text_code = self.code_viewer.toPlainText()
             data.append([f"{directory}", f"{text_code}"])
 
         return data
@@ -387,12 +387,12 @@ class NodeEditorWidget(QWidget):
             if self.multi_code_wnd.currentWidget() == self.header_wnd:
                 self.header_wnd.selectAll()
                 self.header_wnd.copy()
-            elif self.multi_code_wnd.currentWidget() == self.cpp_wnd:
-                self.cpp_wnd.selectAll()
-                self.cpp_wnd.copy()
+            elif self.multi_code_wnd.currentWidget() == self.cpp_code_viewer_wnd:
+                self.cpp_code_viewer_wnd.selectAll()
+                self.cpp_code_viewer_wnd.copy()
         else:
-            self.text_code_wnd.selectAll()
-            self.text_code_wnd.copy()
+            self.code_viewer.selectAll()
+            self.code_viewer.copy()
 
         self.update_text_code_files()
 
@@ -464,29 +464,29 @@ class NodeEditorWidget(QWidget):
                 self.header_wnd.append(item)
             self.header_wnd.append('')
 
-            self.cpp_wnd.clear()
-            self.cpp_wnd.append(f'#include "{self.windowTitle().replace("*","")}.h"')
-            self.cpp_wnd.append(f'using namespace std;')
+            self.cpp_code_viewer_wnd.clear()
+            self.cpp_code_viewer_wnd.append(f'#include "{self.windowTitle().replace("*", "")}.h"')
+            self.cpp_code_viewer_wnd.append(f'using namespace std;')
 
             for node in self.scene.nodes:
                 node.syntax = current_syntax
 
                 if node.getNodeCode() and node.showCode:
-                    self.cpp_wnd.append(node.getNodeCode())
-            self.fix_html(self.cpp_wnd)
+                    self.cpp_code_viewer_wnd.append(node.getNodeCode())
+            self.fix_html(self.cpp_code_viewer_wnd)
         else:
-            self.text_code_wnd.clear()
+            self.code_viewer.clear()
 
             for item in imports:
-                self.text_code_wnd.append(item)
-            self.text_code_wnd.append('')
+                self.code_viewer.append(item)
+            self.code_viewer.append('')
 
             for node in self.scene.nodes:
                 node.syntax = current_syntax
 
                 if node.getNodeCode() and node.showCode:
-                    self.text_code_wnd.append(node.getNodeCode())
-            self.fix_html(self.text_code_wnd)
+                    self.code_viewer.append(node.getNodeCode())
+            self.fix_html(self.code_viewer)
 
     def fix_html(self, textwdg):
         string = textwdg.toHtml().replace(" {", " ").replace(" }", " ").replace("</span>", "")
