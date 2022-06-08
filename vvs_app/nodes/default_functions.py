@@ -1,3 +1,5 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QListWidget, QTreeWidgetItem, QListWidgetItem, QAbstractItemView
 from qtpy.QtGui import *
 
 from nodeeditor.node_socket import Socket, Socket_Types
@@ -574,42 +576,53 @@ class MakeList(MasterNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[6], outputs=['array'])
+        self.inputs[0].is_multi_edges = True
+        self.list = []
 
     def check_socket_connections(self):
-        count = 0
-        textcount = 0
-        for socket in self.inputs:
-            if self.isInputConnected(self.inputs.index(socket)):
-                count += 1
-            if self.scene.masterRef.get_QWidget_content(socket.userInputWdg) != "":
-                textcount += 1
+        if self.NodeAtOutput(0):
+            if self.inputs[0].socket_type != Socket_Types[self.NodeAtOutput(0).node_usage]:
+                self.remove_socket(self.inputs[0])
+                socket = Socket(node=self, index=len(self.inputs), position=self.input_socket_position,
+                                socket_type=Socket_Types[self.NodeAtOutput(0).node_usage], multi_edges=True,
+                                count_on_this_node_side=len(self.inputs), is_input=True)
+                self.inputs.append(socket)
+            # self.grNode.AutoResizeGrNode()
 
-        if count + textcount == len(self.inputs):
-            socket = Socket(node=self, index=len(self.inputs), position=self.input_socket_position,
-                            socket_type=6, multi_edges=self.input_multi_edged,
-                            count_on_this_node_side=len(self.inputs), is_input=True)
-            self.inputs.append(socket)
-            self.grNode.AutoResizeGrNode()
+    def properties(self):
+        self.nodes_list = QListWidget()
+        self.nodes_list.setDragDropMode(QAbstractItemView.InternalMove)
 
-        # if len(self.inputs) - (count + textcount) > 1 and count != 0:
-        #     for socket in self.inputs:
-        #         if self.isInputConnected(self.inputs.index(socket)) == False and self.scene.masterRef.get_QWidget_content(socket.userInputWdg) == "":
-        #             self.remove_socket(socket)
-        #             for socket in self.inputs:
-        #                 socket.index = self.inputs.index(socket)
-        #                 socket.setSocketPosition()
-        #                 text = self.scene.masterRef.get_QWidget_content(socket.userInputWdg)
-        #                 socket.init_socket_wdg()
-        #                 self.scene.masterRef.set_QWidget_content(socket.userInputWdg, text)
-        # self.grNode.AutoResizeGrNode()
+        self.scene.masterRef.proprietiesWdg.clear_properties()
+        self.scene.masterRef.proprietiesWdg.create_properties_widget("List Items", self.nodes_list)
+        if self.getInputs(0):
+            for node in [name for name in [edge.getOtherSocket(self.inputs[0]).node.name for edge in self.inputs[0].socketEdges]]:
+                QListWidgetItem(node, self.nodes_list)
+        self.nodes_list.model().rowsMoved.connect(self.change_order)
+        self.change_order()
+
+    def change_order(self):
+        self.list.clear()
+        for i in range(self.nodes_list.count()):
+            self.list.append(self.nodes_list.item(i).text())
+
+        dic = {}
+        for edge in self.inputs[0].socketEdges:
+            dic[edge.getOtherSocket(self.inputs[0]).node.name] = edge
+
+        self.inputs[0].socketEdges = [dic[index] for index in self.list]
 
     def getNodeCode(self):
         self.check_socket_connections()
+        if self.list == []:
+            for edge in self.inputs[0].socketEdges:
+                self.list.append(edge.getOtherSocket(self.inputs[0]).node.name)
+
         raw_code = "Empty"
         self.showCode = False
         return_code = ''
-        for socket in self.inputs:
-            socket_code = self.get_my_input_code(socket.index)
+        for socket in self.list:
+            socket_code = socket
 
             if socket_code != '':
                 socket_code = str(socket_code) + ', '

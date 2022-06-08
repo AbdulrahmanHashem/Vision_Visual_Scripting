@@ -393,6 +393,11 @@ class UserNodesList(QTabWidget):
 
                     return list_item
 
+            for node in selectedNodes:
+                if node.__class__ == (MakeList):
+                    node.properties()
+                    return
+
             self.proprietiesWdg.clear_properties()
         else:
             self.proprietiesWdg.clear_properties()

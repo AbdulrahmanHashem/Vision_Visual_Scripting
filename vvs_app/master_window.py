@@ -731,35 +731,35 @@ class MasterWindow(NodeEditorWindow):
         if window:
             self.graphs_parent_wdg.setActiveSubWindow(window)
 
-    def is_default(self, widget):
-        if [QDoubleSpinBox].__contains__(type(widget)):
-            if widget.value() == 0.000000:
-                return True
-            else:
-                return False
-        elif [QSpinBox].__contains__(type(widget)):
-            if widget.value() == 0:
-                return True
-            else:
-                return False
-        elif [QLineEdit, QLabel].__contains__(type(widget)):
-            if widget.text() == "":
-                return True
-            else:
-                return False
-        elif [QTextEdit].__contains__(type(widget)):
-            if widget.toPlainText() == "":
-                return True
-            else:
-                return False
-        elif [QRadioButton, QCheckBox].__contains__(type(widget)):
-            if widget.isChecked() == False:
-                return True
-            else:
-                return False
-        else:
-            print(widget, "Widget Not Supported << is_default")
-            return None
+    # def is_default(self, widget):
+    #     if [QDoubleSpinBox].__contains__(type(widget)):
+    #         if widget.value() == 0.000000:
+    #             return True
+    #         else:
+    #             return False
+    #     elif [QSpinBox].__contains__(type(widget)):
+    #         if widget.value() == 0:
+    #             return True
+    #         else:
+    #             return False
+    #     elif [QLineEdit, QLabel].__contains__(type(widget)):
+    #         if widget.text() == "":
+    #             return True
+    #         else:
+    #             return False
+    #     elif [QTextEdit].__contains__(type(widget)):
+    #         if widget.toPlainText() == "":
+    #             return True
+    #         else:
+    #             return False
+    #     elif [QRadioButton, QCheckBox].__contains__(type(widget)):
+    #         if widget.isChecked() == False:
+    #             return True
+    #         else:
+    #             return False
+    #     else:
+    #         print(widget, "Widget Not Supported << is_default")
+    #         return None
 
     def get_QWidget_content(self, widget):
         if [QKeySequenceEdit].__contains__(type(widget)):
