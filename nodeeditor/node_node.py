@@ -347,7 +347,6 @@ class Node(Serializable):
         if DEBUG: print(" - remove node from the scene")
         self.scene.removeNode(self)
         if DEBUG: print(" - everything was done.")
-
     # def markDescendantsDirty(self, new_value: bool=True):
     #     """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
     #
@@ -358,7 +357,6 @@ class Node(Serializable):
     #         other_node.markDirty(new_value)
     #         other_node.markDescendantsDirty(new_value)
     #
-
     def getChildrenNodes(self) -> 'List[Node]':
 
         """
@@ -550,7 +548,6 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
             return None
-
 
     def getInputs(self, index: int = 0) -> 'List[Node]':
         """

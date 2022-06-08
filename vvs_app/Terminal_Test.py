@@ -201,30 +201,12 @@
 
 
 
+import numpy as np
+# Create a numpy array from a list of numbers
+arr = np.array([11, 12, 13, 14, 15, 16, 17, 15, 11, 12, 14, 15, 16, 17])
 
-
-
-
-AhmedAge = 22
-
-
-def CalculateAge():
-    if (AhmedAge > 50):
-
-        print("Old")
-
-
-
-    else:
-
-        print("Young")
-
-
-CalculateAge()
-
-
-
-
+index = np.where(arr == 17)
+arr = np.delete(arr, index[0][0])
 
 
 

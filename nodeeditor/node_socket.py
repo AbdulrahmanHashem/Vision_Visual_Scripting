@@ -300,13 +300,13 @@ class Socket(Serializable):
         else:
             return self.socket_code
 
-    def init_socket_wdg(self):
+    def init_socket_wdg(self, reset=True):
         if self.is_input:
-            if self.socket_type == 0: return
+            if self.socket_type == 0 or self.socketEdges: return
             userInputWdg = None
             scene_pos = self.grSocket.pos()
 
-            if self.userInputWdg: self.userInputWdg.deleteLater()
+            if self.userInputWdg and reset: self.userInputWdg.deleteLater()
 
             if [4, 5, 6].__contains__(self.original_socket_type):
                 userInputWdg = QTextEdit()
@@ -348,7 +348,6 @@ class Socket(Serializable):
                 sceneProxy = self.node.scene.grScene.addWidget(userInputWdg)
                 sceneProxy.setParentItem(self.node.grNode)
                 sceneProxy.setPos(int(scene_pos.x() + self.grSocket.radius + 4), int(scene_pos.y() - self.grSocket.radius))
-
                 # if selected_theme == night:
                 userInputWdg.setStyleSheet("background-color: #555555; border-width: 1px; border-style: solid; border-color: transparent; color: white")
                 self.userInputWdg = userInputWdg

@@ -473,7 +473,7 @@ class NodeEditorWidget(QWidget):
 
                 if node.getNodeCode() and node.showCode:
                     self.cpp_wnd.append(node.getNodeCode())
-
+            self.fix_html(self.cpp_wnd)
         else:
             self.text_code_wnd.clear()
 
@@ -486,4 +486,12 @@ class NodeEditorWidget(QWidget):
 
                 if node.getNodeCode() and node.showCode:
                     self.text_code_wnd.append(node.getNodeCode())
+            self.fix_html(self.text_code_wnd)
 
+    def fix_html(self, textwdg):
+        string = textwdg.toHtml().replace(" {", " ").replace(" }", " ").replace("</span>", "")
+        list = string.splitlines()
+        for line in list:
+            if line.__contains__(">      </pre>") or line.__contains__(">     </pre>") or line.__contains__(">      </p>") or line.__contains__("> </p>") or line.__contains__("><br /></p>") or line.__contains__("><br /></pre>"):
+                string = string.replace(line, "")
+        textwdg.setHtml(string)
