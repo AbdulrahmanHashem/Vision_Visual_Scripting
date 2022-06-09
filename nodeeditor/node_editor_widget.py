@@ -15,7 +15,7 @@ from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
-from vvs_app.nodes.default_functions import Print, UserInput
+from vvs_app.nodes.default_functions import Print, UserInput, ConvertDataType
 from vvs_app.nodes.user_functions_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import UserVar
 
@@ -431,8 +431,11 @@ class NodeEditorWidget(QWidget):
                 imports.append("#include <list>")
 
             if function_types.__contains__(UserInput.node_type) or function_types.__contains__(Print.node_type):
-                if imports.__contains__("#include <iostream>"):
-                    imports.append("#include <iostream>")
+                # if imports.__contains__("#include <iostream>"):
+                imports.append("#include <iostream>")
+
+            if function_types.__contains__(ConvertDataType.node_type):
+                imports.append("#include <sstream>")
 
             for data in user_data:
                 if data['node_type'] == UserFunction.node_type and data['node_name'] != "main":
@@ -489,9 +492,24 @@ class NodeEditorWidget(QWidget):
             self.fix_html(self.code_viewer)
 
     def fix_html(self, textwdg):
-        string = textwdg.toHtml().replace(" {", " ").replace(" }", " ").replace("</span>", "")
+        string = textwdg.toHtml()
         list = string.splitlines()
-        for line in list:
-            if line.__contains__(">      </pre>") or line.__contains__(">     </pre>") or line.__contains__(">      </p>") or line.__contains__("> </p>") or line.__contains__("><br /></p>") or line.__contains__("><br /></pre>"):
-                string = string.replace(line, "")
-        textwdg.setHtml(string)
+
+        textwdg.clear()
+        for line in list[4:]:
+            add = False
+            if line.__contains__("</p>"):
+                line = line.replace("</p>", "</pre>").replace("<p ", "<pre ")
+            line1 = line.replace(" ", "")
+            if line1.__contains__("background-color"):
+                if not line1.__contains__("></span></pre>"):
+                    add = True
+            else:
+                if not line1.__contains__("></pre>"):
+                    if not line1.__contains__("></p>"):
+                        if not line1.__contains__("><br/></pre>"):
+                            add = True
+            if add:
+                textwdg.append(
+                    """<pre style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"></pre>""")
+                textwdg.append(line)

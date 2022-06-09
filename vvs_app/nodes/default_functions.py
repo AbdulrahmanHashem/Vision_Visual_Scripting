@@ -446,6 +446,7 @@ cout &lt;&lt; "{inputCode}", cin >> {inputName};
             rust_code = f"""
 let mut {inputName} = String::new();{rr}
 stdin().read_line(&mut {inputName}).unwrap();
+let {inputName}: &str = &{inputName}[..];
 {brotherCode}"""
 
             raw_code = rust_code
@@ -580,7 +581,7 @@ class MakeList(MasterNode):
         self.list = []
 
     def input_output_symmetry(self):
-        if self.NodeAtOutput(0):
+        if self.NodeAtOutput(0) and self.NodeAtOutput(0).node_usage:
             if self.inputs[0].socket_type != Socket_Types[self.NodeAtOutput(0).node_usage]:
                 for edge in self.inputs[0].socketEdges:
                     edge.remove()
@@ -684,7 +685,6 @@ class ListAppend(MasterNode):
 {o_list} = numpy.append({o_list}, {L_SP}{new_value}{R_SP})
 {next}"""
             raw_code = python_code
-
         elif self.syntax == "C++":
             if self.getInputs(2):
                 if self.getInputs(2)[0].node_structure == "single value":
@@ -692,10 +692,9 @@ class ListAppend(MasterNode):
                 else:
                     new_value = f"{new_value}.begin(),{new_value}.end()"
             CPP_code = f"""
-{o_list}.assign({new_value})
+{o_list}.assign(1, {new_value});
 {next}"""
             raw_code = CPP_code
-
         elif self.syntax == "Rust":
             if self.getInputs(2):
                 if self.getInputs(2)[0].node_structure == "single value":
@@ -710,8 +709,9 @@ for item in &{new_value}
 {R_P}
 {next}"""
             else:
-                rust_code = f"""{o_list}.push({new_value});
-                {next}
+                rust_code = f"""
+{o_list}.push({new_value});
+{next}
                 """
             raw_code = rust_code
         return self.grNode.highlight_code(raw_code)
@@ -750,7 +750,7 @@ class ListRemove(MasterNode):
         next = self.get_other_socket_code(0)
         if self.syntax == "Python":
             python_code = f"""
-index = np.where(arr == {remove_value})
+index = numpy.where({o_list} == {remove_value})
 {o_list} = numpy.delete({o_list}, index[0][0])
 {next}"""
             raw_code = python_code

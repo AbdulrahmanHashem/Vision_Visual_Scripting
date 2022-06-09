@@ -155,7 +155,7 @@ class SceneHistory():
 
         hs = self.createHistoryStamp(desc)
         self.history_stack.append(hs)
-        print(self.history_stack)
+
         self.history_current_step += 1
         if DEBUG: print("  -- setting step to:", self.history_current_step)
 

@@ -45,8 +45,8 @@ class UserVar(MasterNode):
         R_P = "}"
 
         if self.node_usage == 'string':
-            input_1_code = f'"{input_1_code}"'
-
+            if not self.isInputConnected(1):
+                input_1_code = f'"{input_1_code}"'
 
         if self.syntax == "Python":
             if self.node_structure == 'single value':

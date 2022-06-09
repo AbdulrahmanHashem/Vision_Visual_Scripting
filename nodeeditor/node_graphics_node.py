@@ -253,9 +253,11 @@ class QDMGraphicsNode(QGraphicsItem):
     def highlight_code(self, raw_code):
 
         if self.isSelected():
-            code = f""" <pre><p style="font-family: Calibri "><span style="background-color:{self.title_color};" >{raw_code}</span></p></pre> """
+            code = f"""<pre><p style="font-family: Calibri "><span style="background-color:{self.title_color};" >{raw_code}</span></p></pre>"""
+            # code = f"""<pre style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style="background-color:{self.title_color};" >{raw_code}</span></pre>"""
         else:
             code = f""" <pre><p style="font-family: Calibri "><span>{raw_code}</span></p></pre> """
+            # code = f"""<pre style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span>{raw_code}</span></pre>"""
         return code
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
