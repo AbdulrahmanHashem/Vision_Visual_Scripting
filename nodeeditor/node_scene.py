@@ -390,16 +390,19 @@ class NodeScene(Serializable):
         nodes, edges = [], []
         for node in self.nodes: nodes.append(node.serialize())
         for edge in self.edges: edges.append(edge.serialize())
-
-        return OrderedDict([
-            ('id', self.id),
-            ('syntax', self.node_editor.syntax_selector.currentText()),
-            ('scene_height', self.scene_height),
-            ('scene_height', self.scene_height),
-            ('user_nodes', self.serialize_user_nodes()),
-            ('nodes', nodes),
-            ('edges', edges),
-        ])
+        current = []
+        if self.serialize_user_nodes() is not None:
+            current = self.serialize_user_nodes().copy()
+        return OrderedDict(
+            [
+                ('id', self.id),
+                ('syntax', self.node_editor.syntax_selector.currentText()),
+                ('scene_height', self.scene_height),
+                ('scene_height', self.scene_height),
+                ('user_nodes', current),
+                ('nodes', nodes),
+                ('edges', edges),
+            ])
 
     def deserialize(self, data: dict, hashmap: dict = {}, restore_id: bool = True, *args, **kwargs) -> bool:
         # Start with the scene ID
@@ -416,10 +419,18 @@ class NodeScene(Serializable):
             node_name = node_data['node_name']
             current_user_nodes.append(node_name)
 
+        # Create a list of all Stored User Nodes at the History Stamp
+        stored_user_nodes = [node_data['node_name'] for node_data in data['user_nodes']]
+        # print(stored_user_nodes, current_user_nodes)
+
+        # If the Node Doesn't Exist in the History stamp then Delete IT
+        for user_node in current_user_nodes:
+            if not stored_user_nodes.__contains__(user_node):
+                self.user_nodes_wdg.delete_node(item_name=user_node)
+
         # If the Node Doesn't Exist Then Create It !
         for user_node in data['user_nodes']:
-            node_name = user_node['node_name']
-            if not current_user_nodes.__contains__(node_name):
+            if not current_user_nodes.__contains__(user_node['node_name']):
                 self.user_nodes_wdg.create_user_node(type=user_node['node_type'],
                                                      name=user_node['node_name'],
                                                      node_id=user_node['node_id'],
@@ -427,14 +438,6 @@ class NodeScene(Serializable):
                                                      node_usage=user_node['node_usage'],
                                                      node_return=user_node['node_return'],
                                                      declaration=user_node['declaration'])
-
-        # Create a list of all Stored User Nodes at the History Stamp
-        stored_user_nodes = [node_data['node_name'] for node_data in data['user_nodes']]
-
-        # If the Node Doesn't Exist in the History stamp then Delete IT
-        for user_node in current_user_nodes:
-            if not stored_user_nodes.__contains__(user_node):
-                self.user_nodes_wdg.delete_node(item_name=user_node)
 
         # -- deserialize NODES
         # Instead of recreating all the nodes, reuse existing ones...

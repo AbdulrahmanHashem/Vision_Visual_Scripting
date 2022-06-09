@@ -136,6 +136,7 @@ class SceneHistory():
         - `History Modified`
         - `History Stored`
         """
+
         if setModified:
             self.scene.has_been_modified = True
 
@@ -153,8 +154,8 @@ class SceneHistory():
             self.history_current_step -= 1
 
         hs = self.createHistoryStamp(desc)
-
         self.history_stack.append(hs)
+        print(self.history_stack)
         self.history_current_step += 1
         if DEBUG: print("  -- setting step to:", self.history_current_step)
 
