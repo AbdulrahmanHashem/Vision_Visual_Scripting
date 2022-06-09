@@ -587,7 +587,6 @@ class MakeList(MasterNode):
                                 socket_type=Socket_Types[self.NodeAtOutput(0).node_usage], multi_edges=True,
                                 count_on_this_node_side=len(self.inputs), is_input=True)
                 self.inputs.append(socket)
-            # self.grNode.AutoResizeGrNode()
 
     def properties(self):
         self.nodes_list = QListWidget()
@@ -596,27 +595,28 @@ class MakeList(MasterNode):
         self.scene.masterRef.proprietiesWdg.clear_properties()
         self.scene.masterRef.proprietiesWdg.create_properties_widget("List Items", self.nodes_list)
         if self.getInputs(0):
-            for node in [name for name in [edge.getOtherSocket(self.inputs[0]).node.name for edge in self.inputs[0].socketEdges]]:
-                QListWidgetItem(node, self.nodes_list)
+            for node in [edge.getOtherSocket(self.inputs[0]).node for edge in self.inputs[0].socketEdges]:
+                item = QListWidgetItem(node.name, self.nodes_list)
+                item.setData(50, node.id)
         self.nodes_list.model().rowsMoved.connect(self.change_order)
         self.change_order()
 
     def change_order(self):
-        self.list.clear()
+        list1 = []
         for i in range(self.nodes_list.count()):
-            self.list.append(self.nodes_list.item(i).text())
+            list1.append(self.nodes_list.item(i).data(50))
 
         dic = {}
         for edge in self.inputs[0].socketEdges:
-            dic[edge.getOtherSocket(self.inputs[0]).node.name] = edge
+            dic[edge.getOtherSocket(self.inputs[0]).node.id] = edge
 
-        self.inputs[0].socketEdges = [dic[index] for index in self.list]
+        self.inputs[0].socketEdges = [dic[index] for index in list1]
 
     def getNodeCode(self):
         self.check_socket_connections()
-        if self.list == []:
-            for edge in self.inputs[0].socketEdges:
-                self.list.append(edge.getOtherSocket(self.inputs[0]).node.name)
+        self.list.clear()
+        for edge in self.inputs[0].socketEdges:
+            self.list.append(edge.getOtherSocket(self.inputs[0]).node.name)
 
         raw_code = "Empty"
         self.showCode = False

@@ -791,9 +791,9 @@ class MasterWindow(NodeEditorWindow):
         elif [QSpinBox, QDoubleSpinBox].__contains__(type(widget)):
             widget.setValue(new_value)
         elif [QLineEdit, QLabel, QTextEdit].__contains__(type(widget)):
-            widget.setText(new_value)
+            widget.setText(str(new_value))
         elif [QRadioButton, QCheckBox].__contains__(type(widget)):
-            widget.setChecked(new_value)
+            widget.setChecked(bool(new_value))
         elif [QComboBox].__contains__(type(widget)):
             widget.clear()
             widget.addItems(new_value)
