@@ -579,9 +579,11 @@ class MakeList(MasterNode):
         self.inputs[0].is_multi_edges = True
         self.list = []
 
-    def check_socket_connections(self):
+    def input_output_symmetry(self):
         if self.NodeAtOutput(0):
             if self.inputs[0].socket_type != Socket_Types[self.NodeAtOutput(0).node_usage]:
+                for edge in self.inputs[0].socketEdges:
+                    edge.remove()
                 self.remove_socket(self.inputs[0])
                 socket = Socket(node=self, index=len(self.inputs), position=self.input_socket_position,
                                 socket_type=Socket_Types[self.NodeAtOutput(0).node_usage], multi_edges=True,
@@ -612,8 +614,11 @@ class MakeList(MasterNode):
 
         self.inputs[0].socketEdges = [dic[index] for index in list1]
 
+        self.getNodeCode()
+        self.scene.node_editor.UpdateTextCode()
+
     def getNodeCode(self):
-        self.check_socket_connections()
+        self.input_output_symmetry()
         self.list.clear()
         for edge in self.inputs[0].socketEdges:
             self.list.append(edge.getOtherSocket(self.inputs[0]).node.name)
