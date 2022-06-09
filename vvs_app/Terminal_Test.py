@@ -205,13 +205,17 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QListWidget, QGr
     QSizePolicy
 from PyQt5.QtCore import Qt
 
-import numpy
-
 
 def main():
-    Name = input("Enter Your Name")
+    Name = ""
 
-    Age_String = input("Enter Your Age")
+    Age = 0
+
+    Age_String = ""
+
+    Name = input("Enter Your Name :")
+
+    Age_String = input("Enter Your Age :")
 
     Age = int(Age_String)
 
@@ -222,18 +226,17 @@ def main():
     Data_Store = numpy.append(Data_Store, ["add to remove"])
 
     index = numpy.where(Data_Store == "add to remove")
+
     Data_Store = numpy.delete(Data_Store, index[0][0])
 
     if Age_Check:
+
         for item in Data_Store:
             print(item)
+
     else:
+
         print("You Are Too Young")
-
-
-
-main()
-
 
 
 

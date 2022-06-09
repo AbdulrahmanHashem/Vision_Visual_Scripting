@@ -383,17 +383,24 @@ class NodeEditorWidget(QWidget):
         return data
 
     def CopyTextCode(self):
+        import pyperclip as pc
+        Copied = False
         if self.syntax_selector.currentText() == "C++":
             if self.multi_code_wnd.currentWidget() == self.header_wnd:
-                self.header_wnd.selectAll()
-                self.header_wnd.copy()
+                text = self.header_wnd.toPlainText()
+                pc.copy(text)
+                Copied = True
             elif self.multi_code_wnd.currentWidget() == self.cpp_code_viewer_wnd:
-                self.cpp_code_viewer_wnd.selectAll()
-                self.cpp_code_viewer_wnd.copy()
+                text = self.cpp_code_viewer_wnd.toPlainText()
+                pc.copy(text)
+                Copied = True
         else:
-            self.code_viewer.selectAll()
-            self.code_viewer.copy()
+            text = self.code_viewer.toPlainText()
+            pc.copy(text)
+            Copied = True
 
+        if Copied:
+            self.scene.masterRef.statusBar().showMessage("Code Copied")
         self.update_text_code_files()
 
     def syntax_changed(self):
@@ -495,8 +502,12 @@ class NodeEditorWidget(QWidget):
         string = textwdg.toHtml()
         list = string.splitlines()
 
+        if string.__contains__('''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">'''):
+            for i in range(4):
+                list.remove(list[0])
+
         textwdg.clear()
-        for line in list[4:]:
+        for line in list:
             add = False
             if line.__contains__("</p>"):
                 line = line.replace("</p>", "</pre>").replace("<p ", "<pre ")
