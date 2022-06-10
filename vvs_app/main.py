@@ -67,8 +67,7 @@ if __name__ == '__main__':
     splash = Splash()
 
     wnd = MasterWindow()
-    # wnd.setWindowFlag(Qt.FramelessWindowHint)
+
     splash.run(wnd)
 
     sys.exit(app.exec_())
-    # if selected_theme == night:

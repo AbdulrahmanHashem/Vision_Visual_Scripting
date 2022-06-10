@@ -15,7 +15,7 @@ from nodeeditor.node_edge import Edge, EDGE_TYPE_BEZIER
 from nodeeditor.node_node import Node
 from nodeeditor.node_scene import NodeScene, InvalidFile
 from nodeeditor.utils import dumpException
-from vvs_app.nodes.default_functions import Print, UserInput, ConvertDataType
+# from vvs_app.nodes.default_functions import ConvertDataType #,Print, UserInput
 from vvs_app.nodes.user_functions_nodes import UserFunction
 from vvs_app.nodes.variables_nodes import UserVar
 
@@ -437,12 +437,12 @@ class NodeEditorWidget(QWidget):
             if used_node_structure.__contains__('array'):
                 imports.append("#include <list>")
 
-            if function_types.__contains__(UserInput.node_type) or function_types.__contains__(Print.node_type):
-                # if imports.__contains__("#include <iostream>"):
-                imports.append("#include <iostream>")
+            # if function_types.__contains__(UserInput.node_type) or function_types.__contains__(Print.node_type):
+            #     # if imports.__contains__("#include <iostream>"):
+            #     imports.append("#include <iostream>")
 
-            if function_types.__contains__(ConvertDataType.node_type):
-                imports.append("#include <sstream>")
+            # if function_types.__contains__(ConvertDataType.node_type):
+            #     imports.append("#include <sstream>")
 
             for data in user_data:
                 if data['node_type'] == UserFunction.node_type and data['node_name'] != "main":
@@ -454,9 +454,9 @@ class NodeEditorWidget(QWidget):
                     elif data['node_structure'] == 'array':
                         imports.append(f'extern list &lt; {self.return_types[data["node_usage"]][current_syntax]} &gt; {data["node_name"]};')
         elif syntax == 'Rust':
-            if function_types.__contains__(UserInput.node_type):
-                # if imports.__contains__("use std::io::stdin;"):
-                imports.append("use std::io::stdin;")
+            # if function_types.__contains__(UserInput.node_type):
+            #     # if imports.__contains__("use std::io::stdin;"):
+            #     imports.append("use std::io::stdin;")
             for data in user_data:
                 if data['node_type'] == UserVar.node_type and data['declaration'] == "global":
                     imports.append(f'static {data["node_name"]}: {self.return_types[data["node_usage"]][current_syntax].replace(" -> ", "")} = none;')

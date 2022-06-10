@@ -105,117 +105,122 @@ Languages = \
                     {
                         "Process":
                             {
-                                "if": [[[0, 3], [0, 0]],
-                                       "\nif content1:\nnext\norder",
-                                       "\nif (content1)\n{next\n}\norder",
-                                       "\nif content1\n{next\n}\norder",
+                                "If": [[[0, 3], [0, 0]],
+                                       "\nif input1:\noutput1\noutput0",
+                                       "\nif (input1)\n{output1\n}\noutput0",
+                                       "\nif input1\n{output1\n}\noutput0",
                                        "#90FF5733"],
-                                "while loop": [[[0, 3], [0]],
-                                               "\nwhile content1:\nnext",
-                                               "\nwhile (content1)\n{next\n}",
-                                               "\nwhile content1\n{next\n}",
-                                               "#90FF5733"],
-                                "for loop": [[[0, 2], [0]],
-                                             "\nfor item in range(content1):\nnext",
-                                             "\nfor (int i=0;i&lt;content1;i++)\n{next\n}",
-                                             "\nfor index in 0..content1\n{next\n}",
+                                "While loop": [[[0, 3], [0, 0]],
+                                               "\nwhile input1:\noutput1\noutput0",
+                                               "\nwhile (input1)\n{output1\n}\noutput0",
+                                               "\nwhile input1\n{output1\n}\noutput0",
+                                               "#905050FF"],
+                                "For loop": [[[0, 2], [0, 0]],
+                                             "\nfor item in range(input1):\noutput1\noutput0",
+                                             "\nfor (int i=0;i&lt;input1;i++)\n{output1\n}\noutput0",
+                                             "\nfor index in 0..input1\n{output1\n}\noutput0",
                                              "#905050FF"],
-                                "for each loop": [[[0, 5, 4], [0, 6]],
-                                                  "\nfor content2 in content1:\nnext",
-                                                  "\nfor (auto content2 : content1)\n{next\n}",
-                                                  "\nfor content2 in &content1\n{next\n}",
+                                "For each loop": [[[0, 5, 4], [0, 0, 6]],
+                                                  "\nfor input2 in input1:\noutput1\noutput0",
+                                                  "\nfor (auto input2 : input1)\n{output1\n}\noutput0",
+                                                  "\nfor input2 in &input1\n{output1\n}\noutput0",
                                                   "#905050FF"],
-                                "else": [[[0], [0]],
-                                         "\nelse:\nnext",
-                                         "\nelse \n{next\n}",
-                                         "\nelse \n{next\n}",
+                                "Else": [[[0], [0, 0]],
+                                         "\nelse:\noutput1\noutput0",
+                                         "\nelse \n{output1\n}\noutput0",
+                                         "\nelse \n{output1\n}\noutput0",
                                          "#90FF5733"],
-                                "elif": [[[0, 3], [0]],
-                                         "\nelif content1:\nnext",
-                                         "\nelse if (content1)\n{next\n}",
-                                         "\nelse if (content1)\n{next\n}",
-                                         "#90FF5733"]
+                                "Elif": [[[0, 3], [0, 0]],
+                                         "\nelif input1:\noutput1\noutput0",
+                                         "\nelse if (input1)\n{output1\n}\noutput0",
+                                         "\nelse if (input1)\n{output1\n}\noutput0",
+                                         "#90FF5733"],
+                                "ConvertDataType": [[[0, 6, 6], [0]],
+                                                    "\ninput2 = input_type2(input1)\noutput0",
+                                                    "\nistringstream(input1) >> input2;\noutput0",
+                                                    "\nlet input2: input_type2 = input1.trim().parse().unwrap();\noutput0",
+                                                    "#90FF5000"]
                             },
                         "Logic":
                             {
-                                "and": [[[6, 6], [3]],
-                                        "content0 and content1",
-                                        "content0 and content1",
-                                        "content0 && content1",
+                                "And": [[[6, 6], [3]],
+                                        "input0 and input1",
+                                        "input0 and input1",
+                                        "input0 && input1",
                                         "#30000050"],
-                                "or": [[[6, 6], [3]],
-                                       "content0 or content1",
-                                       "content0 or content1",
-                                       "content0 | content1",
+                                "Or": [[[6, 6], [3]],
+                                       "input0 or input1",
+                                       "input0 or input1",
+                                       "input0 | input1",
                                        "#30000050"],
                                 "Less than": [[[6, 6], [3]],
-                                              "content0 &lt; content1",
-                                              "content0 &lt; content1",
-                                              "content0 &lt; content1",
+                                              "input0 &lt; input1",
+                                              "input0 &lt; input1",
+                                              "input0 &lt; input1",
                                               "#30000050"],
-                                "greater than": [[[6, 6], [3]],
-                                                 "content0 &gt;  content1",
-                                                 "content0 &gt;  content1",
-                                                 "content0 &gt;  content1",
+                                "Greater than": [[[6, 6], [3]],
+                                                 "input0 &gt;  input1",
+                                                 "input0 &gt;  input1",
+                                                 "input0 &gt;  input1",
                                                  "#30000050"],
-                                "equal": [[[6, 6], [3]],
-                                          "content0 = content1",
-                                          "content0 = content1",
-                                          "content0 = content1",
+                                "Equal": [[[6, 6], [3]],
+                                          "input0 = input1",
+                                          "input0 = input1",
+                                          "input0 = input1",
                                           "#30000050"]
                             },
                         "Math":
                             {
-                                "add": [[[6, 6], [6]],
-                                        "content0 + content1",
-                                        "content0 + content1",
-                                        "content0 + content1",
+                                "Add": [[[6, 6], [6]],
+                                        "input0 + input1",
+                                        "input0 + input1",
+                                        "input0 + input1",
                                         "#70307030"],
-                                "subtract": [[[6, 6], [6]],
-                                             "content0 - content1",
-                                             "content0 - content1",
-                                             "content0 - content1",
+                                "Subtract": [[[6, 6], [6]],
+                                             "input0 - input1",
+                                             "input0 - input1",
+                                             "input0 - input1",
                                              "#70307030"],
-                                "multiply": [[[6, 6], [6]],
-                                             "content0 * content1",
-                                             "content0 * content1",
-                                             "content0 * content1",
+                                "Multiply": [[[6, 6], [6]],
+                                             "input0 * input1",
+                                             "input0 * input1",
+                                             "input0 * input1",
                                              "#70307030"],
-                                "divide": [[[6, 6], [6]],
-                                           "content0 / content1",
-                                           "content0 / content1",
-                                           "content0 / content1",
+                                "Divide": [[[6, 6], [6]],
+                                           "input0 / input1",
+                                           "input0 / input1",
+                                           "input0 / input1",
                                            "#70307030"]
                             },
                         "Input":
                             {
-                                "raw code": [[[0, 4], [0]],
-                                             "\ncontent1\nnext",
-                                             "\ncontent1\nnext",
-                                             "\ncontent1\nnext",
+                                "Raw code": [[[0, 4], [0]],
+                                             "\ninput1\noutput0",
+                                             "\ninput1\noutput0",
+                                             "\ninput1\noutput0",
                                              "#505050"],
-                                "user input": [[[0, 6, 4], [0]],
-                                               "\ncontent1 = input(content2)\nnext",
-                                               "\ncout &lt;&lt; content1, cin >> content2;\nnext",
-                                               "\nlet mut content1 = String::new();\nprintln!(content2);\nstdin().read_line(&mut content1).unwrap();\nnext",
+                                "User input": [[[0, 6, 4], [0]],
+                                               "\ninput1 = input(input2)\noutput0",
+                                               "\ncout &lt;&lt; input1, cin >> input2;\noutput0",
+                                               "\nlet mut input1 = String::new();\nprintln!(input2);\nstdin().read_line(&mut input1).unwrap();\noutput0",
                                                "#303030"]
                             },
                         "Output":
                             {
-                                "return": [[[0, 6], []],
-                                           "\nreturn content1",
-                                           "\nreturn content1;",
-                                           "\nreturn content1;",
+                                "Return": [[[0, 6], []],
+                                           "\nreturn input1",
+                                           "\nreturn input1;",
+                                           "\nreturn input1;",
                                            "#90702070"],
-                                "break": [[[0], []],
+                                "Break": [[[0], []],
                                           "\nbreak",
                                           "\nbreak;",
                                           "\nbreak;",
                                           "#90702070"],
-                                "print": [[[0, 6], [0]],
-                                          "\nprint(content1)\nnext",
-                                          "\ncout &gt;&gt;  content1;\nnext",
-                                          "\nprintln!(content1);\nnext",
+                                "Print": [[[0, 6], [0]],
+                                          "\nprint(input1)\noutput0",
+                                          "\ncout &gt;&gt;  input1;\noutput0",
+                                          "\nprintln!(input1);\noutput0",
                                           "#90702070"]
                             }
                     }
@@ -244,35 +249,43 @@ def make_nodes():
                     current_language = Languages["Languages"][self.syntax]
                     raw_code = Languages["statement"][self.sub_category][self.node_name][current_language]
 
+                    # putting all inputs in the proper place and order
                     if self.inputs:
-                        for input in self.inputs:
-                            if input.socket_type != 0:
-                                new = str(self.get_my_input_code(self.inputs.index(input)))
-                                raw_code = raw_code.replace(f"content{str(self.inputs.index(input))}", new)
+                        for input in self.inputs[1:]:
+                            # if input.socket_type != 0:
+                            new = str(self.get_my_input_code(self.inputs.index(input)))
+                            raw_code = raw_code.replace(f"input{str(self.inputs.index(input))}", new)
 
+                    # putting all outputs in the proper place and order
                     if self.outputs:
-                        if raw_code.__contains__("next"):
-                            nextCode = self.get_other_socket_code(0)
-                            raw_code = raw_code.replace("next", f"{Indent(nextCode)}")
+                        for output in self.outputs:
+                            new = str(self.get_other_socket_code(self.outputs.index(output)))
 
-                            if len(self.outputs) > 1:
-                                brotherCode = self.get_other_socket_code(1)
-                                if self.outputs[1].socket_type != 0:
-                                    self.outputs[1].socket_code = self.get_my_input_code(2)
-                                raw_code = raw_code.replace("order", f"{brotherCode}")
-                        else:
-                            self.showCode = False
-                            raw_code = self.outputs[0].socket_code = raw_code
+                            if output.socket_type == 0 and self.outputs.index(output) > 0:
+                                new = Indent(str(self.get_other_socket_code(self.outputs.index(output))))
+
+                            raw_code = raw_code.replace(f"output{str(self.outputs.index(output))}", new)
+
+                            # as a rule if you have only one output and it's not of the type 0 (executable) then
+                            # the node's code only is useful inside another and it shouldn't show as an independent code
+                            if output.socket_type != 0 and len(self.outputs) == 1:
+                                self.showCode = False
+                    if raw_code.__contains__("input_type"):
+                        for input in self.inputs[1:]:
+                            # if input.socket_type != 0:
+                            type = self.scene.node_editor.return_types[self.getInputs(2)[0].node_usage][current_language].replace(" -> ", "")
+                            raw_code = raw_code.replace(f"input_type{str(self.inputs.index(input))}", type)
+                        #     raw_code = self.outputs[0].socket_code = raw_code
+                        # if raw_code.__contains__("next"):
+                        #     nextCode = self.get_other_socket_code(0)
+                        #     raw_code = raw_code.replace("next", f"{Indent(nextCode)}")
+                        #
+                        #     if len(self.outputs) > 1:
+                        #         brotherCode = self.get_other_socket_code(1)
+                        #         if self.outputs[1].socket_type != 0:
+                        #             self.outputs[1].socket_code = self.get_my_input_code(2)
+                        #         raw_code = raw_code.replace("order", f"{brotherCode}")
+                        # else:
+                        #     self.showCode = False
 
                     return self.grNode.highlight_code(raw_code)
-
-# def get_datatype_node(self, as_fun_return: bool = False):
-#     return self.scene.node_editor.get_datatype(self.syntax, self.node_return, as_fun_return)
-#
-# def get_datatype(syntax, node_return, as_fun_return: bool = False):
-#     lang_index = Languages["Languages"][syntax]
-#     get_datatype = Languages["data types"][node_return][lang_index]
-#     if as_fun_return:
-#         if get_datatype != "":
-#             return f"""{Languages["return_syntax"][lang_index]}{get_datatype}"""
-#     return get_datatype

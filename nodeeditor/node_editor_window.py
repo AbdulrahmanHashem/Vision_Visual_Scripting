@@ -36,7 +36,8 @@ class NodeEditorWindow(QMainWindow):
 
         self.global_switches = GlobalSwitches(master=self)
 
-        # make_nodes()
+        make_nodes()
+
         for cls in MasterNode.__subclasses__():
             register_Node(cls)
 

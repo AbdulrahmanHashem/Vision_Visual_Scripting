@@ -34,7 +34,7 @@ def register_Node(Node_Class):
     Node_Type = len({**FUNCTIONS, **VARIABLES, **EVENTS})
     Node_Class.node_type = Node_Type
 
-    if Node_Class.category == "FUNCTION": # "statement"
+    if Node_Class.category == "FUNCTION" or Node_Class.category == "statement":
         FUNCTIONS[Node_Type] = Node_Class
     elif Node_Class.category == "User_Function":
         EVENTS[Node_Type] = Node_Class
