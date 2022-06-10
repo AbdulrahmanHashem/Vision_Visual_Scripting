@@ -259,17 +259,25 @@ def make_nodes():
                     # putting all outputs in the proper place and order
                     if self.outputs:
                         for output in self.outputs:
-                            new = str(self.get_other_socket_code(self.outputs.index(output)))
+                            output_index = self.outputs.index(output)
+                            new = str(self.get_other_socket_code(output_index))
 
-                            if output.socket_type == 0 and self.outputs.index(output) > 0:
-                                new = Indent(str(self.get_other_socket_code(self.outputs.index(output))))
+                            if output.socket_type == 0 and output_index > 0:
+                                new = Indent(str(self.get_other_socket_code(output_index)))
 
-                            raw_code = raw_code.replace(f"output{str(self.outputs.index(output))}", new)
+                            raw_code = raw_code.replace(f"output{str(output_index)}", new)
 
-                            # as a rule if you have only one output and it's not of the type 0 (executable) then
+                            # if the node has one output and it's not of the type 0 (executable) then
                             # the node's code only is useful inside another and it shouldn't show as an independent code
                             if output.socket_type != 0 and len(self.outputs) == 1:
                                 self.showCode = False
+
+                            # if the node output isn't type 0 then the output code = the input of the same index
+                            if output.socket_type != 0:
+                                value = self.scene.masterRef.get_QWidget_content(self.inputs[output_index].userInputWdg)
+                                if self.isInputConnected(output_index):
+                                    value = self.getInput(output_index).getNodeCode
+                                output.socket_code = value
 
                     if raw_code.__contains__("input_type"):
                         for input in self.inputs[1:]:
@@ -277,18 +285,5 @@ def make_nodes():
                             if self.isInputConnected(self.inputs.index(input)):
                                 type = self.scene.node_editor.return_types[self.getInput(self.inputs.index(input)).node_usage][current_language].replace(" -> ", "")
                             raw_code = raw_code.replace(f"input_type{str(self.inputs.index(input))}", type)
-
-                        #     raw_code = self.outputs[0].socket_code = raw_code
-                        # if raw_code.__contains__("next"):
-                        #     nextCode = self.get_other_socket_code(0)
-                        #     raw_code = raw_code.replace("next", f"{Indent(nextCode)}")
-                        #
-                        #     if len(self.outputs) > 1:
-                        #         brotherCode = self.get_other_socket_code(1)
-                        #         if self.outputs[1].socket_type != 0:
-                        #             self.outputs[1].socket_code = self.get_my_input_code(2)
-                        #         raw_code = raw_code.replace("order", f"{brotherCode}")
-                        # else:
-                        #     self.showCode = False
 
                     return self.grNode.highlight_code(raw_code)
