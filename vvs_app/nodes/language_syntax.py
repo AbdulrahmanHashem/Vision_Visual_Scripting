@@ -20,7 +20,8 @@ data_types_symbols = \
                                 "dictionary": ["dict", "dictionary", "dict"],
                                 "tuple": ["tuple", "tuple", "tuple"]
                             }
-                    },
+                    }
+
 Languages = \
             {
                 "Languages": {"Python": 1, "C++": 2, "Rust": 3},
@@ -252,7 +253,6 @@ def make_nodes():
                     # putting all inputs in the proper place and order
                     if self.inputs:
                         for input in self.inputs[1:]:
-                            # if input.socket_type != 0:
                             new = str(self.get_my_input_code(self.inputs.index(input)))
                             raw_code = raw_code.replace(f"input{str(self.inputs.index(input))}", new)
 
@@ -270,11 +270,14 @@ def make_nodes():
                             # the node's code only is useful inside another and it shouldn't show as an independent code
                             if output.socket_type != 0 and len(self.outputs) == 1:
                                 self.showCode = False
+
                     if raw_code.__contains__("input_type"):
                         for input in self.inputs[1:]:
-                            # if input.socket_type != 0:
-                            type = self.scene.node_editor.return_types[self.getInputs(2)[0].node_usage][current_language].replace(" -> ", "")
+                            type = ""
+                            if self.isInputConnected(self.inputs.index(input)):
+                                type = self.scene.node_editor.return_types[self.getInput(self.inputs.index(input)).node_usage][current_language].replace(" -> ", "")
                             raw_code = raw_code.replace(f"input_type{str(self.inputs.index(input))}", type)
+
                         #     raw_code = self.outputs[0].socket_code = raw_code
                         # if raw_code.__contains__("next"):
                         #     nextCode = self.get_other_socket_code(0)
