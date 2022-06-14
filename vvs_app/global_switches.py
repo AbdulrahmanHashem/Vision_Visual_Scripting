@@ -90,7 +90,7 @@ class GlobalSwitches:
 
         s, z = "{font:", "}"
         self.master_ref.setStyleSheet(f"QWidget {s}{size}px{z}")
-        if self.master_ref.settingsWidget:
+        if self.master_ref.__dict__.__contains__("settingsWidget"):
             self.master_ref.settingsWidget.setStyleSheet(f"QWidget {s}{size}px{z}")
 
     def change_theme(self, theme:str = ""):

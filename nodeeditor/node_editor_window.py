@@ -36,6 +36,8 @@ class NodeEditorWindow(QMainWindow):
 
         self.global_switches = GlobalSwitches(master=self)
 
+        self.global_switches.update_font_size()
+
         make_nodes()
 
         for cls in MasterNode.__subclasses__():

@@ -509,7 +509,6 @@ class NodeEditorWidget(QWidget):
         textwdg.clear()
         for line in list:
             add = False
-            add_E_line = True
             if line.__contains__("{") or line.__contains__("}"):
                 add_E_line = False
             if line.__contains__("</p>"):
@@ -524,7 +523,6 @@ class NodeEditorWidget(QWidget):
                         if not line1.__contains__("><br/></pre>"):
                             add = True
             if add:
-                if add_E_line:
-                    textwdg.append(
-                        """<pre style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"></pre>""")
+                textwdg.append(
+                    """<pre style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"></pre>""")
                 textwdg.append(line)
