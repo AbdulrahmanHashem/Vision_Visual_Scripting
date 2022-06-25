@@ -252,38 +252,48 @@ def make_nodes():
 
                     # putting all inputs in the proper place and order
                     if self.inputs:
-                        for input in self.inputs[1:]:
+                        S_T_List = [input.socket_type for input in self.inputs]
+                        if S_T_List.__contains__(0):
+                            beginning = 1
+                        else:
+                            beginning = 0
+
+                        for input in self.inputs[beginning:]:
                             new = str(self.get_my_input_code(self.inputs.index(input)))
                             raw_code = raw_code.replace(f"input{str(self.inputs.index(input))}", new)
+                        if raw_code.__contains__("input_type"):
+                            for input in self.inputs[beginning:]:
+                                type = ""
+                                if self.isInputConnected(self.inputs.index(input)):
+                                    type = self.scene.node_editor.return_types[
+                                        self.getInput(self.inputs.index(input)).node_usage][current_language].replace(
+                                        " -> ", "")
+                                raw_code = raw_code.replace(f"input_type{str(self.inputs.index(input))}", type)
 
                     # putting all outputs in the proper place and order
                     if self.outputs:
-                        for output in self.outputs:
-                            output_index = self.outputs.index(output)
-                            new = str(self.get_other_socket_code(output_index))
+                        S_T_List = [output.socket_type for output in self.outputs]
+                        if S_T_List.__contains__(0):
+                            for output in self.outputs:
+                                output_index = self.outputs.index(output)
 
-                            if output.socket_type == 0 and output_index > 0:
-                                new = Indent(str(self.get_other_socket_code(output_index)))
+                                new = str(self.get_other_socket_code(output_index))
+                                if output.socket_type == 0 and output_index > 0:
+                                    new = Indent(str(self.get_other_socket_code(output_index)))
+                                raw_code = raw_code.replace(f"output{str(output_index)}", new)
 
-                            raw_code = raw_code.replace(f"output{str(output_index)}", new)
-
-                            # if the node has one output and it's not of the type 0 (executable) then
-                            # the node's code only is useful inside another and it shouldn't show as an independent code
-                            if output.socket_type != 0 and len(self.outputs) == 1:
-                                self.showCode = False
-
-                            # if the node output isn't type 0 then the output code = the input of the same index
-                            if output.socket_type != 0:
-                                value = self.scene.masterRef.get_QWidget_content(self.inputs[output_index].userInputWdg)
-                                if self.isInputConnected(output_index):
-                                    value = self.getInput(output_index).getNodeCode
-                                output.socket_code = value
-
-                    if raw_code.__contains__("input_type"):
-                        for input in self.inputs[1:]:
-                            type = ""
-                            if self.isInputConnected(self.inputs.index(input)):
-                                type = self.scene.node_editor.return_types[self.getInput(self.inputs.index(input)).node_usage][current_language].replace(" -> ", "")
-                            raw_code = raw_code.replace(f"input_type{str(self.inputs.index(input))}", type)
+                                # if the node output isn't type 0 then the output code = the input of the same index
+                                if output.socket_type != 0:
+                                    value = self.scene.masterRef.get_QWidget_content(self.inputs[output_index].userInputWdg)
+                                    if self.isInputConnected(output_index):
+                                        value = self.getInput(output_index).getNodeCode
+                                    output.socket_code = value
+                        else:
+                            for output in self.outputs:
+                                # if the node has one output and it's not of the type 0 (executable) then
+                                # the node's code only is useful inside another and it shouldn't show as an independent code
+                                if len(self.outputs) == 1:
+                                    self.showCode = False
+                                output.socket_code = raw_code
 
                     return self.grNode.highlight_code(raw_code)
